@@ -50,7 +50,10 @@
 	$distribution = trim(array_key_exists('distribution',$_POST)?$_POST['distribution']:null);
 	$contributer_ID = trim(array_key_exists('contribRef',$_POST)?$_POST['contribRef']:null);
 	$origDate = trim(array_key_exists('origDate',$_POST)?$_POST['origDate']:null);
-	$mediaRefs = str_replace(" ",":",$fileList);
+	$fileList = trim($fileList, "\s:");
+	$fileList = str_replace("::",":",$fileList);
+	$fileList = "$fileList:";
+	$mediaRefs = $fileList;
 	$uploadDate = date('Y-m-d H:i:s');
 	$editComnt = trim(array_key_exists('editComnt',$_POST)?$_POST['editComnt']:null);
 	$stmt3->execute();

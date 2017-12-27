@@ -102,19 +102,17 @@ if ($upcount > 0 && $upfile != ""){ // test if more than 0 upload and that the n
  	$delList = array_key_exists('imgDeletelist', $_POST)?$_POST['imgDeletelist']:null;
  	if ($delList==""){
  		//print "No images to delete";
- //	continue;
+ //continue;
  	}
- 	//$filepart = 'http://192.168.43.132/ibis/Data/Images/';
- //	$delList = str_replace("$filepart","",$delList);
- 	$delListrefs = explode(":", $delList);
+  	$delListrefs = explode(":", $delList);
 //print "";
 	foreach ($delListrefs as $delItem){
 	//print "$delItem <br>";
  		$fileList = str_replace("$delItem", "", $fileList);
 	}
 $fileList = str_replace(" ", ":", $fileList);// replace spaces with colons in filelist
-$fileList = str_replace("[:]+",":", $fileList );// squash repeated colons into a single colon
-$fileList = str_replace("^:","", $fileList );// repplace colons on start of line with null // end delete list routine
+//$fileList = str_replace("&[:]+",":", $fileList );// squash repeated colons into a single colon
+//$fileList = str_replace("^:","", $fileList );// repplace colons on start of line with null // end delete list routine
 	// print "Filelist minus Dellist is $fileList<br>";
 	$theTagList = array_key_exists("editedtagslist",$_POST)?$_POST['editedtagslist']:null;
 	if ($theTagList != null){

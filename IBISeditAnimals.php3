@@ -53,6 +53,9 @@
 	$uploadDate = date('Y-m-d H:i:s');
 	$status = trim(array_key_exists('status',$_POST)?$_POST['status']:null);
 	$category = trim(array_key_exists('category',$_POST)?$_POST['category']:null);
+	$fileList = trim($fileList, "\s:");
+	$fileList = str_replace("::",":",$fileList);
+	$fileList = "$fileList:";
 	$mediaRefs = $fileList;
 	$editComnt = trim(array_key_exists('editComnt',$_POST)?$_POST['editComnt']:null);
 	$stmt3->execute();

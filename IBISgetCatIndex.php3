@@ -45,16 +45,17 @@
     	while ($stmt2->fetch()){
   	 	$retlist2 .= "$ddl2return:"; // returns a list of mediaRefs
     }
+    
     }else {
      print $mysqli->error;
      
    }
-  //$stmt2->bind_result($ddl2return); ...moved this to inside the test condition
- //   while ($stmt2->fetch()){
-  //  	$retlist2 .= "$ddl2return:"; // returns a list of mediaRefs
-    
+      
    $stmt2->close(); 
+  // print "$retlist2";
    $splitSetArray = explode("::", $retlist2); //split the list of medRefs each set seperated with ::
+   $thing = $splitSetArray[0];
+
    $numSets = count($splitSetArray); // get how many sets there are
    for ($j = 0; $j < $numSets; $j++){ // loop over the list of sets
    /*why am i splitting the lists again?*/ 
@@ -63,6 +64,7 @@
     if (!$asSet[0]){ // if the first index of the set array is null stop the loop
      break;
     }
+    
     $firstM = $asSet[0]; // collect the first entry from each set
     $firstMList .= "$firstM:"; // add the first member to a running list of first members
    }

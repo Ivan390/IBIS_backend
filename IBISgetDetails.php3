@@ -44,6 +44,10 @@ $imgpath = "";
 $recID = "";
 $recnum = "";
 $viewC = 0;
+$theTab = "";
+$theField = "";
+$edCount = 0;
+$thespec = "";
   include ("IBISvars.inc");
  	if (!$guest_acc){
   	print "the include file was not included <br>";
@@ -55,6 +59,9 @@ $viewC = 0;
 
 	if ($theCat == "vegetables"){
 	$prefix = "veg";
+	$theTab = "VegetablesEdits";
+	$theField = "VegetableID";
+	$thespec = "species";
   $stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef  FROM Vegetables WHERE species='$theSpecies'");
 
   $stmt3->bind_result($vegID, $phylum, $subPhylum, $class, $subClass, $Vorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $ecology, $distrib_Notes, $uses, $growing, $category, $status, $uploadDate, $mediaRefs, $contribRef);	
@@ -144,6 +151,9 @@ $viewC = 0;
 	}
 	if ($theCat == "animals"){
 	$prefix = "anim";
+	$theTab = "AnimalsEdits";
+	$theField = "AnimalID";
+	$thespec = "species";
   $stmt3 = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib,  uploadDate, mediaRefs, contribRef, status  FROM Animals WHERE species='$theSpecies'");
 
   $stmt3->bind_result($animID, $phylum, $subPhylum, $class, $subClass, $order, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $uploadDate, $mediaRefs, $contribRef, $status);	
@@ -228,6 +238,9 @@ $viewC = 0;
 
 	if ($theCat == "minerals"){
 	$prefix = "min";
+	$theTab = "MineralsEdits";
+	$theField = "MineralID";
+	$thespec = "name";
   $stmt3 = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses, mediaRefs,   contribRef, uploadDate, distrib  FROM Minerals WHERE name='$theSpecies'");
 
   $stmt3->bind_result($minID, $name, $Mgroup, $crystalSys, $habit, $chemForm, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $uses, $mediaRefs, $contribRef, $uploadDate, $distrib);	
@@ -333,7 +346,7 @@ function goBack(){
 
 </script>
 <?php
-print "<div id=viewsBlock><label>Viewed <span id=Vcount>'$viewC'</span> Times</label></div>";
+print "<div id=viewsBlock><label>Viewed <span id=Vcount>$viewC</span> Times</label><br><label>Edited <span id=Ecount>$edCount</span> Times </label></div>";
 ?>
 </body>
 
