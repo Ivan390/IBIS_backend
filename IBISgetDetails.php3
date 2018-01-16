@@ -235,7 +235,7 @@ $thespec = "";
     <input type=\"text\" name=\"thecat\" id=\"thecat\" class=\"hiddentext\" value=\"$theCat\"/>
 	  <input type=\"text\" name=\"specref\" id=\"specRef\" class=\"hiddentext\" value=\"$theSpecies\"/>
 	   <input type=\"text\" name=\"conRef\" id=\"conRef\" class=\"hiddentext\" value=\"$contribRef\"/>
-	   <input type=\"text\" name=\"recID\" id=\"recID\" class=\"hiddentext\" value=\"$AnimalID\"/>
+	   <input type=\"text\" name=\"recID\" id=\"recID\" class=\"hiddentext\" value=\"$animID\"/>
  </form>
   ";
 	}
@@ -357,7 +357,7 @@ function goBack(){
 
 </script>
 <?php
-print "<div id=viewsBlock><label>Viewed <span id=Vcount>$viewC</span> Times</label><br><label>Edited <span id=Ecount>$edCount</span> Times </label></br><label>Current Score <span id=\"currScore\">$currScore</span></label></div><div id=\"ratingsBlock\">
+print "<div id=viewsBlock><label>Viewed <span id=Vcount>$viewC</span> Times</label><br><label>Edited <span id=Ecount>$edCount</span> Times </label></br><label>Current Score </br><span id=\"currScore\">$currScore</span></label></div><div id=\"ratingsBlock\">
 	<legend><span id=\"ratehead\">Rate this page</span><p>
 		<input
 			type=\"radio\"
@@ -412,9 +412,19 @@ print "<div id=viewsBlock><label>Viewed <span id=Vcount>$viewC</span> Times</lab
 	<input type=\"button\" onclick=\"submitVote()\" class=\"button\" value=\"Submit\">
 	<input type=\"button\" onclick=\"cancelVote()\" class=\"button\" value=\"Cancel\">
 	</div>
-</div><div>
-	<span id=\"ratebutton\"><input type=\"button\" id=\"ratebut\" class=\"button\" value=\"Rate this page\" onclick=\"showRating()\"></span>
-</div><div id=\"commentBlock\" display=\"none\"><label>You have given this page a low score, You can...</labe></br><a href=\"IBISregistration.html\" class=\"littleDD linksclass\">Register as a contributer and edit it</a> or</br><label>Write a note to the person who edited it last</label></br><textarea id=\"edNotes\" name=\"Ednotes\" class=\"notes\"></textarea></br><input type=\"button\" class=\"button\" value=\"Submit Note\" onclick=\"submitNote()\"><input type=\"button\" class=\"button\" value=\"Dismiss\" onclick=\"dismissNote()\"></div>";
+</div><div id=\"showRates\">
+	<span id=\"ratebutton\"><input type=\"button\" id=\"ratebut\" class=\"button\" value=\"Rate this page\" onclick=\"showRating()\"></span><span id=\"rtecmnt\">not sent</span>
+</div>
+	<div id=\"commentBlock\" display=\"none\">
+		<label>You have given this page a low score, You can...</label></br>
+		<a href=\"http://192.168.43.132/ibis/IBISregistration.html\" class=\"littleDD linksclass\">Register as a contributer and edit it</a> or</br>
+		<label>Write a note to the person who edited it last</label></br>
+		<textarea id=\"edNotes\" name=\"Ednotes\" class=\"notes\"></textarea></br>
+		<input type=\"button\" class=\"button\" value=\"Submit Note\" onclick=\"submitNote()\"/>
+		<input type=\"button\" class=\"button\" value=\"Dismiss\" onclick=\"dismissNote()\"/>
+	</div>
+	
+	<span id=\"rateSent\"><input type=\"text\" id=\"rateIsSent\" value=\"no\"/><input type=\"input\" id=\"rcID\" value=\"\" style=\"display:none;\"/></span>";
 ?>
 </body>
 

@@ -1,0 +1,88 @@
+<?php
+/*links to user profile page
+on this page a Contributer can do some things like
+go through all the pages edited by him
+get an aggregate score of all pages edited by him
+change personal details and profile pic
+also maybe some functions to access some system or custom functions
+
+*/
+$htmlHead = '<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
+      <title> Details</title>
+      <script type="text/javascript" src="http://192.168.43.132/ibis/jquery-1.11.3.js"> </script>
+      <script type="text/javascript" src="http://192.168.43.132/ibis/Gmain.js"></script>
+	    <script type="text/javascript" src="http://192.168.43.132/ibis/dateshorts.js"></script>
+
+      <link rel="stylesheet"
+        type="text/css"
+        href="http://192.168.43.132/ibis/IBIS_maincss.css"
+      />
+      
+    
+    </head> 
+    <body onload=initForm()>
+      <div id="DETallContainer" class="ac">
+        <div id="dateTime">
+	        <div id="dateBlock">The Date</div>
+	        <div id="timeBlock">The Time</div>       
+	      </div>
+	      <div id="logo_image_holder">
+	        <img id="logo_image" src="/ibis/images/Logo1_fullsizetransp.png"  />
+	      </div><div id="pgButtons" class="littleDD">
+	        <a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD"><img src="" alt="">Back to Main Screen</a></div>';
+	      
+$htmlClose = '</body><html>';	
+$userName = $_GET['userN'];
+$userName = trim($userName);
+include ("IBISvars.inc");
+if (!$guest_acc){
+	print("some thing went wrong. IBISvars missing");
+}
+$mysqli = new mysqli('localhost', "$contrib_acc", "$contrib_pass", 'IBIS' );
+if ($mysqli->connect_error){
+	die('Connect Error ('.$mysqli->connect_errno.')' .$mysqli->connect_error);
+}
+
+$stmnt1 = $mysqli->prepare("select name, lastname, userName, Media.serverpath,regDate, email from Contributers, Media where Contributers.passwrd = \"$userName\" and Contributers.mediaRef = Media.filename");
+$stmnt1->bind_result($fName, $lName, $username, $mediapath, $regDate, $emailA );     
+$stmnt1->execute();
+$stmnt1->fetch() ;
+$stmnt1->close();
+
+$stmnt2 = $mysqli->prepare("select sum(score) from Vegetables where contribRef = \"$username\"");
+$stmnt2->bind_result($vegSum);
+$stmnt2->execute();
+$stmnt2->fetch();
+$stmnt2->close();
+if (!$vegSum){
+$vegSum = 0;
+}
+$stmnt3 = $mysqli->prepare("select sum(score) from Animals where contribRef = \"$username\"");
+$stmnt3->bind_result($animSum);
+$stmnt3->execute();
+$stmnt3->fetch();
+$stmnt3->close();
+if (!$animSum){
+$animSum = 0;
+}
+$stmnt4 = $mysqli->prepare("select sum(score) from Minerals where contribRef = \"$username\"");
+$stmnt4->bind_result($minSum);
+$stmnt4->execute();
+$stmnt4->fetch();
+$stmnt4->close();
+if (!$minSum){
+$minSum = 0;
+}
+$contribScore = $vegSum + $animSum + $minSum;
+$mediapath = str_replace("$imagesfroot", "$imageshroot", $mediapath);
+$mediapath = str_replace("$imagesdroot", "$imageshroot", $mediapath);
+$mediapath = str_replace("$imagesNotebookroot","$imageshroot", $mediapath);
+
+$infoDiv = "<div id=\"informDiv\">
+<span id=\"nameSpan\">$fName $lName </span></br><span id=\"imageSpan\"><img src=\"$mediapath\" class=\"optImage\"/></span><p>Your current score is</p><span id=\"scoreSpan\">$contribScore</span></div>";
+print("$htmlHead $infoDiv $htmlClose");
+
+?>

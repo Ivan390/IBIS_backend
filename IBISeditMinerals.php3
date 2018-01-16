@@ -4,7 +4,7 @@
 	if (!$guest_acc){
 		print "the include file was not included <br>";
 	}
-	$mysqli = new mysqli('192.168.43.132', "$contrib_acc", "$contrib_pass", 'IBIS');
+	$mysqli = new mysqli('localhost', "$contrib_acc", "$contrib_pass", 'IBIS');
   if ($mysqli->connect_error){
    	die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
   }

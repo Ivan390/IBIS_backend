@@ -1,6 +1,6 @@
 <?php
 /*
-  so this is IBISlogin.php3
+   this is IBISlogin.php3
   collect the sent in values
   login to database and match email
   if not found { return error message}
