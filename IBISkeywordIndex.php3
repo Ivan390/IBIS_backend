@@ -80,7 +80,7 @@
   if ($catVal == "vegetables"){
         $IBISData = "IBIS.Vegetables";
       }
-  $mainQ = "select species, serverpath from IBIS.Media, $IBISData where";   
+  $mainQ = "select genus, species, serverpath from IBIS.Media, $IBISData where";   
       }
 	if ($catVal == "minerals"){
   $IBISData = "IBIS.Minerals";
@@ -111,9 +111,9 @@ if ($stmt3 = $mysqli->prepare("$stmtQ")){
      print $mysqli->error;
    }
 if ($catVal == "vegetables" || $catVal == "animals"){ 
-   $stmt3->bind_result($species, $fullPath);
+   $stmt3->bind_result($Pgenus, $species, $fullPath);
     while ($stmt3->fetch()){
-   	$retlist3 .="$fullPath:$species::";
+   	$retlist3 .="$fullPath:$species:$Pgenus::";
 }// $fullpath:$family:$genus:$species:$localNames:: 
    } 
 if ($catVal == "minerals"){

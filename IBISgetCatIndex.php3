@@ -9,6 +9,10 @@
     if ($fieldval == "Order"){
     	$fieldval = "Aorder";
     }
+    if ($fieldval == "Class"){
+    	$fieldval = "class";
+    
+    }
   }
   $catVal = $_GET['catValtext'];//  category value is the table to search
   $retlist = "";
@@ -35,7 +39,7 @@
 	$IBIS_T = "Minerals";
 	}
 	
-  if ($stmt2 = $mysqli->prepare("SELECT mediaRefs FROM $IBIS_T WHERE $fieldval = '$DDL2value'")){
+  if ($stmt2 = $mysqli->prepare("SELECT mediaRefs FROM $IBIS_T WHERE $fieldval = '$DDL2value' and hasImage = 'yes'")){
   	// select mediaRefs from Vegetables where family = "Ruschia";
     }else { 
     	print $mysqli->error;
@@ -75,7 +79,7 @@
   		if ($catVal == "vegetables"){
         	$IBISData = "IBIS.Vegetables";
       	}
-  		$mainQ = "select species, serverpath from IBIS.Media, $IBISData where";   
+  		$mainQ = "select genus, species, serverpath from IBIS.Media, $IBISData where";   
     }
     if ($catVal == "minerals"){
   		$IBISData = "IBIS.Minerals";
@@ -106,15 +110,15 @@ if ($stmt3 = $mysqli->prepare("$stmtQ")){
      print $mysqli->error;
    }
 if ($catVal == "vegetables" || $catVal == "animals"){ 
-   $stmt3->bind_result($species, $fullPath);
+   $stmt3->bind_result($genus, $species, $fullPath);
     while ($stmt3->fetch()){
-   	$retlist3 .="$fullPath:$species::";
+   	$retlist3 .="$fullPath:$species:$genus;";
 }// $fullpath:$family:$genus:$species:$localNames:: 
    } 
 if ($catVal == "minerals"){
    $stmt3->bind_result($name, $fullPath);
     while ($stmt3->fetch()){
-   	$retlist3 .= "$fullPath:$name::";// $fullpath:$family:$genus:$species:$localNames::
+   	$retlist3 .= "$fullPath:$name;";// $fullpath:$family:$genus:$species:$localNames::
    	}
 }
    $stmt3->close(); 

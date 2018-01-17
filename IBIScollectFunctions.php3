@@ -5,13 +5,16 @@ $tagItem ="";
 $justTag ="";
 $numfile = 0;
 $typea = "";
+$Imgmessage = "yes";
+$hasimage = "";
 $stmt = $mysqli->prepare("SELECT count(MediaID) FROM Media WHERE filename LIKE '%$prefix%'") or die ("cannot create statement.");
 if ($stmt->execute()){
   $stmt->bind_result($numFile) or die ("cannot bind parameters.");
   $stmt->fetch();
   $stmt->close();
   $filecount = count($_FILES['ibismedia']['name']); // get the number of uploaded files and there should be at least one image
-  //$tagCount = count($_POST['imgtag']);
+ 
+   //$tagCount = count($_POST['imgtag']);
   $tags = array_key_exists('imgtag',$_POST)?$_POST['imgtag']: 0;
   //print "$tags";
   if (count($tags) > 0){
@@ -24,7 +27,6 @@ if ($stmt->execute()){
     $numFile++;
     $justname = $_FILES['ibismedia']['name'][$i]; // get the uploaded file name
     $tmpFilePath = $_FILES['ibismedia']['tmp_name'][$i]; // get the temp file name
-    	print "made it here with $justname <br>";
     $extn = substr($justname, -4); // get the extension from the original file
    // if (){} // here should be a check to deal with different types of extensions
     for ($c = 0; $c <= $tagCount; $c++){ // iterate over the tags if any are uploaded
@@ -41,7 +43,7 @@ if ($stmt->execute()){
     $uploadfile = $uploaddir.$newName ; // construct the server upload path
     if ( move_uploaded_file("$tmpFilePath", "$uploadfile") ) { // test the file upload, following code runs only on upload success
       // print("File upload was successful <br>");
-      	$fileMessg = "File upload was successful <br>";
+      	$Imgmessage = "File upload was successful <br>";
       	exec("/usr/bin/convert -resize 400x300! $uploadfile $uploadfile"); // call convert to resize the image
       	$fileList .= "$newName:"; // add the new filename to the list of uploaded files
       	$stmt2 = $mysqli->prepare("INSERT INTO Media ( MediaID, type, filename, tags, uploadDate, contribRef, uploaderType, serverpath ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )"); // write the new media file to the Media table
@@ -59,13 +61,13 @@ if ($stmt->execute()){
       	$servPath = $uploadfile;
       	$stmt2->execute();
        	if ($stmt2->affected_rows == -1){
-			$dataError = "IBIS Media Upload failed <br>";
+					$Imgmessage = "IBIS Media Upload failed <br>";
       	}else{
-			$dataMessg = "IBIS Media upload succesful<br>";
+					$Imgmessage = "IBIS Media upload succesful<br>";
       	}
       	$stmt2->close();
     } else { // end of file upload check, following code runs on upload error
-       	$dataError = "Media upload failed <br>";
+       	$Imgmessage = "Media upload failed <br>";
     }
   } // end of processing file, loop for next file, 
 }else { // end of data connection check, if this test fails none of the above run

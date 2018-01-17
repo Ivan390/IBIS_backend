@@ -81,8 +81,8 @@ $htmlHead = '<!DOCTYPE html>
 	 	 	$(\'#mediaPic\').change(handleFileSelect);	
 	 		if (sessionStorage.userRef){
 	 	 	 sessVar = sessionStorage.userRef;
-	 	 	 sesA = sessVar.split(":");
-	 	 	 conID = sesA[1];
+	 	 	 sesA = sessVar.split("::");
+	 	 	 conID = sesA[0];
 	 	 	 $("#contrib_ID").val(conID);
 	 	 	 }else {
 	    alert("You should really not be on this page!")

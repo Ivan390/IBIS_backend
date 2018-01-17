@@ -12,17 +12,26 @@ include ("IBISvars.inc");
   if ($mysqli->connect_error){
     die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
   }
+  	$prefix = "";
     $justname = $_FILES['picture']['name'];
 	$tmpFilePath = $_FILES['picture']['tmp_name'];
-	$tagstring = $_POST['imgtag']; 
-	$prefix = $tagstring;
+	$tagstring = $_POST['imgtag'];
+	if ($tagstring == "animal"){
+		$prefix = "anim";
+	} 
+	if ($tagstring == "vegetable"){
+		$prefix = "veg";
+	}
+	if ($tagstring == "mineral"){
+		$prefix = "min";
+	} 
+
 	$MAEmetricPair = "";
 	$metricList =  "";
 	$psnmetricList = "";
 	$filePair = "";
 	$imgList = "";
 	$metList = "";
-	print "made it here with $justname <br>";
 	$extn = substr($justname, -4);
 	$extn = "$extn";
 	$stmt = $mysqli->prepare("SELECT count(MediaID) FROM Media WHERE filename LIKE '%$prefix%'") or die ("cannot create statement.");
@@ -33,18 +42,13 @@ include ("IBISvars.inc");
 	 }
 	$numFile = $numFile + 4;
 	$newName = $prefix.$numFile.$extn;
-	print "The new name ".$newName." <br>" ;
 	$uploaddir = "/var/www/html/ibis/Data/Images/temp/";			
 	$uploadfile = $uploaddir.$newName;
 	$tmpFilePath = $_FILES['picture']['tmp_name'];
-	print "temp filename : $tmpFilePath <br>";
 	if ( move_uploaded_file("$tmpFilePath", "$uploadfile") ) {
-		
-	  print("File upload was successful <br>");
 	  exec("/usr/bin/convert -resize 400x300! $uploadfile $uploadfile"); 
 	}
-	
-	$stmt3 = $mysqli->prepare("SELECT filename, serverpath from Media where filename like '%$prefix%'"); 
+	$stmt3 = $mysqli->prepare("SELECT filename, serverpath from Media where filename like '$prefix%'"); 
 	$stmt3->bind_result($fileName, $serverPath); 	
 	$stmt3->execute();
 	while ($stmt3->fetch()){
@@ -79,8 +83,8 @@ include ("IBISvars.inc");
 	  
 	  }
 	 // print "phash metric for $uploadfile and $theSPath  = $metricList <br>"; -fuzz 10%
-	  if ($RMSEmetric < 9000){
-	  	$imgList .= "<img class=\"imgthumb\" src=\"$theSPath\" title=\"$theFName\n$metricList\"/>";
+	  if ($RMSEmetric < 5000){
+	  	$imgList .= "<img class=\"imgthumb\" src=\"$theSPath\" title=\"$theFName\n$metricList\" height=\"200px\" width=\"200px\" onclick=\"getNames(this)\"/>";
 	  	$metList .= "<li>$theFName : $metricList</li>";
 	  }
 	 }
@@ -92,22 +96,30 @@ include ("IBISvars.inc");
 	 //print "UploadFile : $uploadfile <br> Server path <br> $fC files have been read for comparison from the database<br>";
 	 $origF =  "<img class=\"imgthumb\" src=\"$uploadfile\" title=\"uploaded file\"/>";
 	 $imgDiv = "<div id=\"imgDiv\">$imgList</div>";
-	 $listDiv = "<div id=\"listDiv\"><ul>$metList</ul></div>";
+	// $listDiv = "<div id=\"listDiv\"></div>";
 	 
 	$htmlH = '<!DOCTYPE html>
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        
         <title>
         Image Match Result
         </title>
+        <script type="text/javascript" src="http://192.168.43.132/ibis/jquery-1.11.3.js"> </script>
+        <script type="text/javascript" src="http://192.168.43.132/ibis/Gmain.js"></script>
+        <script type="text/javascript">
+        	function closeThis(){
+        		close();
+        		}
+        </script>
         <link rel="stylesheet"
         type="text/css"
         href="/ibis/imgmatch.css"
       />
      </head>
-     <body>';
-	$htmlF = '</body></html>';
+     <body><input type="text" value="'.$tagstring.'" style="display:none" id="catval">';
+	$htmlF = '<div id="listDiv"></div><input type="button" class="buttonclass" onclick="closeThis()" value="Dismiss"/></body></html>';
 	print "$htmlH \n$origF  $listDiv $imgDiv \n$htmlF ";
 /*	
 AE

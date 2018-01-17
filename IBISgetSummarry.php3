@@ -14,9 +14,18 @@ global $mysqli, $retlist4;
 
 $stmtZ = "";
 $catVal = $_GET['catValtext'];
-$pictitle = $_GET['pictitle']; 
+$pictitle = $_GET['pictitle'];
+$binomial = explode(":", $pictitle);
+$Pgenus = trim($binomial[0]);
+if (count($binomial) > 1){
+$Pspecies = $binomial[1];
+}else{
+$Pspecies = "";
+}
+//$Pspecies = trim($binomial[1]); // $Pspecies = trim($binomial[1] ? $binomial[1]] : null);
+//$Pspecies = trim($binomial[1] ? $binomial[1] : null);
   if ($catVal == "vegetables"){ 
-    $stmtZ = "SELECT family, genus, species, localNames FROM Vegetables WHERE species like '%$pictitle%';";
+    $stmtZ = "SELECT family, genus, species, localNames FROM Vegetables WHERE species like '$Pspecies%' and genus ='$Pgenus'";
     if ($stmt4 = $mysqli->prepare("$stmtZ")){
   }else { 
     print "error preparing stmt4 :". $mysqli->error;
@@ -27,7 +36,7 @@ $pictitle = $_GET['pictitle'];
   }
    $stmt4->bind_result($family, $genus, $species, $localnames);
     while ($stmt4->fetch()){
-    $retlist4 .= "$catVal:$family:$genus:$species:$localnames:";
+    $retlist4 .= "$catVal:$family:$genus:$species:$localnames";
     }
    
   }
@@ -43,11 +52,11 @@ $pictitle = $_GET['pictitle'];
   }
    $stmt4->bind_result($name, $mgroup, $crystalsys, $chemform);
     $stmt4->fetch();
-   $retlist4 = "$catVal:$name:$mgroup:$crystalsys:$chemform:";
+   $retlist4 = "$catVal:$name:$mgroup:$crystalsys:$chemform";
   }
   
    if ($catVal == "animals"){ 
-    $stmtZ = "SELECT family, genus, species, localNames FROM Animals WHERE species = '$pictitle';";
+    $stmtZ = "SELECT family, genus, species, localNames FROM Animals WHERE species = '$Pspecies' and genus = '$Pgenus'";
     if ($stmt4 = $mysqli->prepare("$stmtZ")){
   }else { 
     print "error preparing stmt4 :". $mysqli->error;
@@ -58,7 +67,7 @@ $pictitle = $_GET['pictitle'];
   }
    $stmt4->bind_result($family, $genus, $species, $localnames);
      while ($stmt4->fetch()){
-    $retlist4 .= "$catVal:$family:$genus:$species:$localnames:";
+    $retlist4 .= "$catVal:$family:$genus:$species:$localnames";
      } 
  // if ($IBIS_T == "vegetables" || $IBIS_T == "animals"){ 
 //

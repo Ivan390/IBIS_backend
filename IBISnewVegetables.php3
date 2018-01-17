@@ -8,21 +8,21 @@
 	$mysqli = new mysqli('localhost', "$contrib_acc", "$contrib_pass", 'IBIS');
   if ($mysqli->connect_error){
    	die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
+   	$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/okeydoke.png\"><span id=\"messSpan\">Data upload successful</span>";
   }
- $MainBackButton = '<div id="pgButtons" class="littleDD">
+ $buttons = '<div id="pgButtons" class="littleDD">
          <a href="/ibis/IBISmain.html" class="buttonclass littleDD">Back to Main Screen</a>
+         <a href="/ibis/IBISnewVegetables.html" class="buttonclass littleDD">Enter Another</a>
         </div>';
 // print "$MainBackButton <br>";
  	if ($_POST['Akingdom'] == "Plantae"){
- 		$BackButton = '
- 		<div id="pgButtons" class="littleDD">
-    	<a href="/ibis/IBISnewVegetables.html" class="buttonclass littleDD">Enter Another</a></div>';
  		$prefix = "veg";
- 		$fileList ="";
-	  include ("IBIScollectFunctions.php3");
-  $dataMessg = "Data received....processing will follow <br>";
-	$stmt3 = $mysqli->prepare("INSERT INTO Vegetables (VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef, origDate ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or die ("could not prepare statement 3 <br>");
-	$stmt3->bind_param('ssssssssssssssssssssssssss', $VegetableID, $phylum, $subPhylum, $class, $subClass, $order, $suborder, $family, $subfamily, $genus, $subgenus, $species, $subspecies, $common_Names, $name_Notes, $description, $ecology, $distrib_Notes, $uses, $growing, $category, $tatus, $uploadDate, $mediaRefs,  $contributer_ID, $origDate );
+	 	include ("IBIScollectFunctions.php3");
+	
+	
+	  $dataMessg = "Data received....processing will follow <br>";
+	$stmt3 = $mysqli->prepare("INSERT INTO Vegetables (VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef, origDate,hasImage ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or die ("could not prepare statement 3 <br>");
+	$stmt3->bind_param('sssssssssssssssssssssssssss', $VegetableID, $phylum, $subPhylum, $class, $subClass, $order, $suborder, $family, $subfamily, $genus, $subgenus, $species, $subspecies, $common_Names, $name_Notes, $description, $ecology, $distrib_Notes, $uses, $growing, $category, $tatus, $uploadDate, $mediaRefs,  $contributer_ID, $origDate,$haspic );
 	$VegetableID = 0;
 	$phylum = trim(array_key_exists('phylum',$_POST)?$_POST['phylum']: null); 
 	$subPhylum = trim(array_key_exists('subPhylum',$_POST)?$_POST['subPhylum']: null);
@@ -49,18 +49,47 @@
 	$tatus = trim(array_key_exists('status',$_POST)?$_POST['status']: null);
 	$category = trim(array_key_exists('category',$_POST)?$_POST['category']: null);
 	$mediaRefs = $fileList;
+	if ($fileList == ""){
+	$haspic = "no";
+	}else{
+	$haspic = "yes";
+	} 
+	
+	
+//	$haspic = $hasimage;
 	$stmt3->execute();
 	if ($stmt3->affected_rows == -1){
-// this means the transaction could nt be completed and I should put something 
-// to deal with that condition.	
+		$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/okeydoke.png\"><span id=\"messSpan\">Data upload successful</span>";
 	}	
+	$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/okeydoke.png\"><span id=\"messSpan\">Data upload successful</span>";
 	$stmt3->close();
 }
 
-print "this is the end of the script<br>";
-print "$MainBackButton $BackButton ";
-//print "$fileMessg $fileError";
-//print "$dataMessg $dataError";
+$resultWinHead = '<!DOCTYPE html>
+<html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <title>
+            I B I S - Uploads Form
+        </title>
+        <script type="text/javascript" src="http://192.168.43.132/ibis/jquery-1.11.3.js"> </script>
+			  <link rel="stylesheet"
+  				type="text/css"
+    			href="http://192.168.43.132/ibis/DataResult.css"
+   			>
+   			<link rel="stylesheet"
+  				type="text/css"
+    			href="http://192.168.43.132/ibis/IBIS_maincss.css"
+   			>
+   			</head>
+    <body id="AllContainer" class="ac" >
+    '.$buttons.'
+		  <div id="subContainer">
+		  <div id="resultsDiv"><div id="dataM">'.$message.'</div><div id="fileM">'.$Imgmessage.'</div>';
+$resultWinFoot='</div>
+		  </div>
+    </body></html>';		  
+print "$resultWinHead.$resultWinFoot ";
  
  
 

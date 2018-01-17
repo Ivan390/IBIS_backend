@@ -44,7 +44,7 @@ include ("IBISvars.inc");
     die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
   }
 $stmnt1 = $mysqli->prepare("select score from Votes where recID = \"$recordID\"");
-$stmnt1->bind_result($currScore);
+$stmnt1->bind_result($currScore)or die ("could not bind result".$mysqli->error);
 $stmnt1->execute();
 $stmnt1->fetch();
 $stmnt1->close();

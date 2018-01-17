@@ -110,10 +110,7 @@ if ($upcount > 0 && $upfile != ""){ // test if more than 0 upload and that the n
 	//print "$delItem <br>";
  		$fileList = str_replace("$delItem", "", $fileList);
 	}
-$fileList = str_replace(" ", ":", $fileList);// replace spaces with colons in filelist
-//$fileList = str_replace("&[:]+",":", $fileList );// squash repeated colons into a single colon
-//$fileList = str_replace("^:","", $fileList );// repplace colons on start of line with null // end delete list routine
-	// print "Filelist minus Dellist is $fileList<br>";
+$fileList = str_replace(" ", ":", $fileList);
 	$theTagList = array_key_exists("editedtagslist",$_POST)?$_POST['editedtagslist']:null;
 	if ($theTagList != null){
 	  	$newTagsList = explode("::", $theTagList);

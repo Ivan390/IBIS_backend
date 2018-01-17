@@ -4,6 +4,7 @@
 	include ("IBISvars.inc");
 	if (!$guest_acc){
 		print "the include file was not included <br>";
+		
 	}
 	$mysqli = new mysqli('localhost', "$contrib_acc", "$contrib_pass", 'IBIS');
   if ($mysqli->connect_error){
@@ -14,11 +15,13 @@
 	 
 	 	$prefix = "anim";
 	 	$fileList ="";
-	 include ("IBIScollectFunctions.php3");
+	 	$message = "";
+	 	include ("IBIScollectFunctions.php3");
+	
 	 		
 			//print "Data received....processing will follow <br>";
-			$stmt3 = $mysqli->prepare("INSERT INTO Animals (AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef, origDate ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or die ("could not prepare statement 3 <br>");
-			$stmt3->bind_param('ssssssssssssssssssssssss', $AnimalID, $Aphylum, $AsubPhylum, $Aclass, $AsubClass, $Aorder, $Asuborder, $Afamily, $Asubfamily, $Agenus, $Asubgenus, $Aspecies, $Asubspecies, $Acommon_Names, $Aname_Notes, $Adescription, $Ahabits, $Aecology, $Adistrib_Notes,  $Astatus, $AuploadDate, $AmediaRefs,  $Acontributer_ID, $origDate );
+			$stmt3 = $mysqli->prepare("INSERT INTO Animals (AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef, origDate, hasImage ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or die ("could not prepare statement 3 <br>");
+			$stmt3->bind_param('sssssssssssssssssssssssss', $AnimalID, $Aphylum, $AsubPhylum, $Aclass, $AsubClass, $Aorder, $Asuborder, $Afamily, $Asubfamily, $Agenus, $Asubgenus, $Aspecies, $Asubspecies, $Acommon_Names, $Aname_Notes, $Adescription, $Ahabits, $Aecology, $Adistrib_Notes,  $Astatus, $AuploadDate, $AmediaRefs,  $Acontributer_ID, $origDate,$haspic );
 			$AnimalID = 0;
 			$Aphylum = trim(array_key_exists('Aphylum',$_POST)?$_POST['Aphylum']: null); 
 			$AsubPhylum = trim(array_key_exists('AsubPhylum',$_POST)?$_POST['AsubPhylum']: null);
@@ -43,21 +46,29 @@
 			$AuploadDate = $uploadDate;
 			$Astatus = trim(array_key_exists('status',$_POST)?$_POST['status']: null);
 			$AmediaRefs = $fileList;
+			if ($fileList == ""){
+				$haspic = "no";
+			}else{
+				$haspic = "yes";
+			} 
+			
 			$stmt3->execute();
 			if ($stmt3->affected_rows == -1){
+			$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/notokeydoke.png\"><span id=\"messSpan\">Something went wrong please check your connection</span>";
 	// this means the transaction could nt be completed and I should put something 
 	// to deal with that condition.		
+			}else{
+			$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/okeydoke.png\"><span id=\"messSpan\">Data upload successful</span>";
 			}
+			
 			$stmt3->close();		
 	}
 
-$MainBackButton = '<div id="pgButtons" class="littleDD">
+$buttons = '<div id="pgButtons" class="littleDD">
          <a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD">Back to Main Screen</a>
+         <a href="http://192.168.43.132/ibis/IBISnewAnimals.html" class="buttonclass littleDD">Enter another</a>
         </div>';
-$BackButton = '
-	 	<div id="pgButtons" class="littleDD">
-			<a href="http://192.168.43.132/ibis/IBISnewAnimals.html" class="buttonclass littleDD">Enter another</a>
-		</div>';
+
 $resultWinHead = '<!DOCTYPE html>
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -70,11 +81,15 @@ $resultWinHead = '<!DOCTYPE html>
   				type="text/css"
     			href="http://192.168.43.132/ibis/DataResult.css"
    			>
-    </head>
+   			<link rel="stylesheet"
+  				type="text/css"
+    			href="http://192.168.43.132/ibis/IBIS_maincss.css"
+   			>
+   			</head>
     <body id="AllContainer" class="ac" >
-    '.$MainBackButton .$BackButton.'
+    '.$buttons.'
 		  <div id="subContainer">
-		  <div id="resultsDiv"><img id="sucCheck" src="http://192.168.43.132/ibis/images/success.png">';
+		  <div id="resultsDiv"><div id="dataM">'.$message.'</div><div id="fileM">'.$Imgmessage.'</div>';
 $resultWinFoot='</div>
 		  </div>
     </body></html>';		  

@@ -18,7 +18,7 @@ include ("IBISvars.inc");
  	if ($mysqli->connect_error){
     	die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
   	}
-  	$stmnt1 = $mysqli->prepare("INSERT into Comments (CommentID, comment, recID, contribRef, comntDate) VALUES (?,?,?,?,?)");
+  	$stmnt1 = $mysqli->prepare("INSERT into Comments (CommentID, comment, recID, contribRef, comntDate) VALUES (?,?,?,?,?)") or die ("cant prepare statement1". $mysqli->error);
   	$stmnt1->bind_param("sssss",$comID,$commnt,$recID,$contRef, $uploadDate) or die ("could not bind parameters");
   	$stmnt1->execute();
   	$stmnt1->fetch();

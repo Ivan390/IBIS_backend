@@ -35,6 +35,7 @@
 	        </div>
 	      
 	      <form name="infoForm" action="../cgi-bin/IBISgetDetails.php3" method="POST" enctype="multipart/form-data" class="hiddentext">
+	        <input type="text" id="genusRef" name="genusRef" class="" value="">
 	        <input type="text" id="speciesRef" name="speciesRef" class="" value="">
 	        <input type=text id="catVal" name="catVal" class="" value=
 	        <?php
@@ -51,19 +52,30 @@
 	       </div>
 	       <div id="infoDiv"><p>Select from the first set of lists or</p><p>Select a heading and enter a keyword from the lower set of inputs.</p></div>
 	       <div id=findOptions class="littleDD">
-	         <span id=DDLOption></span>
-	         <select id="DDL2" class="selectList" ></select>
-	         <input type="button" id="option2btn" class="buttonclass" onClick="getSelectInfo()" value="Submit Selection"><br>
+	         <span id="DDLOption" ></span>
+	          
+	         <select id="DDL2" class="selectList" ></select></br>
 	         <span id="DDL3Option"></span>
-	         <input type="button" id="option3btn" class="buttonclass" onClick="getkeyword()" value="Submit Keyword"><br>
+	         <span id="buttContSpan" >
+	         	<span id="op2btSpan" onClick="getSelectInfo()">
+	         		<input type="button" id="option2btn" class="buttonclass" onClick="getSelectInfo()" value="Submit Selection">
+	         		</span></br></br>
+	         		<span id="opt3btSpan" onClick="getkeyword()">
+	          		<input type="button" id="option3btn" class="buttonclass" onClick="getkeyword()" value="Submit Keyword">
+	          	</span>
+	          </span>
+	         	
+	          
 	      </div>
-	      <div id=specipicH class=infoset></div>
+	     
 	      <div id=infoSet class=infoset></div>
 	     </div>
 	     
 	    
     </div>
     <script>
+     var DDL1Text = "";
+     var DDL3select = "";
      var thiscatVal = $("#catVal").val();
       if (thiscatVal == "vegetables"){
    DDL1Text = '<select id="DDL1Veg" class="littleDD selectList" onClick="populateDDL2()" onChange="populateDDL2()" width="60px"><option class="listItem " >Family</option><option class="listItem " value="genus">Genus</option><option class="listItem " value="species">Species</option></select>';
@@ -71,7 +83,7 @@ DDL3select='<select id="DDL3dd" class="littleDD selectList"><option value="descr
    
   }
   if (thiscatVal == "animals"){
-   DDL1Text = '<select id="DDL1Veg" class="littleDD selectList" onClick="populateDDL2()" onChange="populateDDL2()" width="60px"><option class="listItem " >Order</option><option class="listItem " >Family</option><option class="listItem" value="genus">Genus</option><option class="listItem " value="species">Species</option></select>';
+   DDL1Text = '<select id="DDL1Veg" class="littleDD selectList" onClick="populateDDL2()" onChange="populateDDL2()" width="60px"><option class="listItem " >Class</option><option class="listItem " >Order</option><option class="listItem " >Family</option><option class="listItem" value="genus">Genus</option><option class="listItem " value="species">Species</option></select>';
    DDL3select='<select id="DDL3dd" class="littleDD selectList">  <option value="descrip">Description</option>   <option value="ecology">Ecology</option><option value="distrib">Distribution</option>   <option value="habits">Habits</option>   <option value="status">Status</option><option value="nameNotes">Name Notes</option><option value="localNames">Local Names</option></select><input type="text" id="ddl3Txt" name="ddl3Txt">';
   }
   if (thiscatVal == "minerals"){
@@ -148,16 +160,23 @@ function getSelectInfo(){
        }else {
 	      var valueList = "";
 	      var theSet = "";
-	      var thedata = data.split("::");
+	      var thedata = data.split(";");
 	      for (b = 0; b < thedata.length; b++){
 	        if (!thedata[b] == ""){
 	          valueList = thedata[b].split(":");
-	          theSet += "<span class=\"linksclass\"><img src=" + valueList[0] + " title=" + valueList[1] + " onClick=showSummarry(this)></span>"; 
+	          if (catVal == "vegetables" || catVal == "animals"){
+	          binomial = valueList[2]+":"+valueList[1];
+	          }
+	          if (catVal == 'minerals') {
+	          	binomial = valueList[1];
+	          }
+	          
+	          theSet += "<span class=\"linksclass\"><img src=" + valueList[0] + " title=" + binomial + " onClick=showSummarry(this)></span>"; 
 	          }
 	        }
 	        $("#catPicsList").html(theSet); 
 	        $("#infoSet").html("");
-	        $("#specipicH").html(""); 
+	       // $("#specipicH").html(""); 
 	      } 
      }
       });
@@ -185,9 +204,10 @@ function showSummarry(that){
 	      thedata2 = data.split(":");
 	     if (thedata2[0] == "vegetables"|| thedata2[0] == "animals"){
   
-       valueList2 = "<div id=sumDetails class=\"\"><span class=\"headingC\">Family</span><br><span class=\"detailC\">" + thedata2[1] + "</span><br><span class=\"headingC\">Genus</span><br><span class=\"detailC\">" + thedata2[2] + "</span><br><span class=\"headingC\">Species</span><br><span class=\"detailC\">" + thedata2[3] + "</span><br> <span class=\"headingC\">Local Names</span><br><span class=\"detailC\">" + thedata2[4] + "</span><br></div>";
-      valueList3 = "<div id=speciePic><img src=\"" + picsrc + "\" title=\"" +thedata2[2]+ " :  "+thedata2[3]+ "\" width=\"200px\" height=\"200px\" /></div>";
+       valueList2 = "<div id=speciePic><img src=\"" + picsrc + "\" title=\"" +thedata2[2]+ " :  "+thedata2[3]+ "\" width=\"200px\" height=\"200px\" /></div><div id=sumDetails class=\"\"><span class=\"headingC\">Family</span><br><span class=\"detailC\">" + thedata2[1] + "</span><br><span class=\"headingC\">Genus</span><br><span class=\"detailC\">" + thedata2[2] + "</span><br><span class=\"headingC\">Species</span><br><span class=\"detailC\">" + thedata2[3] + "</span><br> <span class=\"headingC\">Local Names</span><br><span class=\"detailC localN\">" + thedata2[4] + "</span><br></div>";
+     // valueList3 = "";
       	        $("#speciesRef").val(thedata2[3]);
+      	        $("#genusRef").val(thedata2[2]);
 	     }
 	     if (thedata2[0] == "minerals"){
 	     var chemForm = thedata2[4];
@@ -200,13 +220,12 @@ function showSummarry(that){
 	      chemForm += chemArray[j];
 	     }
 	     
-	     valueList2 = "<div id=sumDetails class=\"\"><span class=\"headingC\">Name</span><br><span class=\"detailC\">" + thedata2[1] + "</span><br><span class=\"headingC\">Group</span><br><span class=\"detailC\">" + thedata2[2] + "</span><br><span class=\"headingC\">Crystal System</span><br><span class=\"detailC\">" + thedata2[3] + "</span><br><span class=\"headingC\">Chemical Formula</span><br><span class=\"detailC\">" + chemForm + "</span><br></div>";
-	     valueList3 = "<div id=speciePic><img src=\"" + picsrc + "\" title=\"" +thedata2[2]+ " :  "+thedata2[3]+ "\" width=\"200px\" height=\"200px\" /></div>";
-	     	        $("#speciesRef").val(thedata2[1]);
+	     valueList2 = "<div id=speciePic><img src=\"" + picsrc + "\" title=\"" +thedata2[2]+ " :  "+thedata2[3]+ "\" width=\"200px\" height=\"200px\" /></div><div id=sumDetails class=\"\"><span class=\"headingC\">Name</span><br><span class=\"detailC\">" + thedata2[1] + "</span><br><span class=\"headingC\">Group</span><br><span class=\"detailC\">" + thedata2[2] + "</span><br><span class=\"headingC\">Crystal System</span><br><span class=\"detailC\">" + thedata2[3] + "</span><br><span class=\"headingC\">Chemical Formula</span><br><span class=\"detailC\">" + chemForm + "</span><br></div>";
+	    $("#speciesRef").val(thedata2[1]);
 	     
 	     }
 	      $("#infoSet").html(valueList2); 
-	      $("#specipicH").html(valueList3); 
+	     // $("#infoSet").append(valueList3); 
 
 	      } 
      }
@@ -237,7 +256,8 @@ $('#getDetails').removeClass("hiddentext");
       success : function(data){
       var testregexp = /nomatch/;
 	     if (testregexp.test(data)) {
-	        alert("No Match Found");
+	      //  alert("No Match Found");
+	        theSet = "<p>No matching Records</p>";
        }else {
 	      var valueList = "";
 	      var theSet = "";
@@ -245,13 +265,20 @@ $('#getDetails').removeClass("hiddentext");
 	      for (b = 0; b < thedata.length; b++){
 	        if (!thedata[b] == ""){
 	          valueList = thedata[b].split(":");
-	          theSet += "<span class=\"linksclass\"><img src=" + valueList[0] + " title=" + valueList[1] + " width=\"100px\" height=\"100px\" onClick=showSummarry(this)></span>"; 
+	          if (catVal == "vegetables" || catVal == "animals"){
+	          binomial = valueList[2]+":"+valueList[1];
+	          }
+	          if (catVal == 'minerals') {
+	          	binomial = valueList[1];
+	          }
+	          theSet += "<span class=\"linksclass\"><img src=" + valueList[0] + " title=" + binomial + " width=\"100px\" height=\"100px\" onClick=showSummarry(this)></span>"; 
 	          }
 	        }
-	        $("#catPicsList").html(theSet); 
+	        
+	      } 
+	      $("#catPicsList").html(theSet); 
 	        $("#infoSet").html("");
 	        $("#specipicH").html(""); 
-	      } 
      }
       });
 

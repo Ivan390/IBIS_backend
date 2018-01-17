@@ -45,22 +45,17 @@ $tom = "";
 $stmt = ""; 
 $retlist ="";
 global $mysqli, $fieldval, $IBIS_T ;
-	if ($stmt = $mysqli->prepare("SELECT DISTINCT $fieldval FROM $IBIS_T")){
-   // print "statement prepared. <br>";
-  }else { 
-    print "error preparing stmt :". $mysqli->error;
-  }
-  $stmt->bind_result($tom);
-  if ($stmt->execute()){
-    		 //print "statement executed.<br>";
-  }else {
-     print $mysqli->error;
-  }
-  while ($stmt->fetch()){
-    $retlist .= "$tom:";
-  }
-  $stmt->close();
+	$stmnt = $mysqli->prepare("SELECT DISTINCT $fieldval FROM $IBIS_T where hasImage = 'yes' order by $fieldval") or die ($mysqli->error);
+	$stmnt->bind_result($tom)or die ($mysqli->error);
+	$stmnt->execute() or die ($mysqli->error);
+	while ($stmnt->fetch()){
+    	$retlist .= "$tom:";
+  	}
+	$stmnt->close();
   print $retlist;
+	
+  
+  
 }
 
 

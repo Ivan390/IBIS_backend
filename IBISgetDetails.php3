@@ -37,6 +37,7 @@
 
 $theCat = $_POST['catVal'];
 $theSpecies = $_POST['speciesRef'];
+$theGenus = $_POST['genusRef'];
 $imglistOptions = "";
 $qClose = ';';
 $picList ="";
@@ -62,8 +63,8 @@ $thespec = "";
 	$theTab = "VegetablesEdits";
 	$theField = "VegetableID";
 	$thespec = "species";
-  $stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef, score  FROM Vegetables WHERE species='$theSpecies'");
-
+  $stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef, score  FROM Vegetables WHERE species='$theSpecies' and genus = '$theGenus'");
+ 
   $stmt3->bind_result($vegID, $phylum, $subPhylum, $class, $subClass, $Vorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $ecology, $distrib_Notes, $uses, $growing, $category, $status, $uploadDate, $mediaRefs, $contribRef, $currScore );	
   $stmt3->execute();
   $stmt3->fetch();
@@ -145,6 +146,7 @@ $thespec = "";
   <div id=\"imgGrid\">$picList </div>
   <form name=\"editForm\" action=\"../../cgi-bin/IBISeditStuff.php3\" method=\"POST\" enctype=\"multipart/form-data\" class=\"hiddentext\">
     <input type=\"text\" name=\"thecat\" id=\"thecat\" class=\"nothiddentext\" value=\"$theCat\"/>
+    <input type=\"text\" name=\"genref\" id=\"genRef\" class=\"hiddentext\" value=\"$genus\"/>
 	  <input type=\"text\" name=\"specref\" id=\"specRef\" class=\"nothiddentext\" value=\"$theSpecies\"/>
 	   <input type=\"text\" name=\"conRef\" id=\"conRef\" class=\"hiddentext\" value=\"$contribRef\"/>
 	    <input type=\"text\" name=\"recID\" id=\"recID\" class=\"hiddentext\" value=\"$vegID\"/>
@@ -156,7 +158,7 @@ $thespec = "";
 	$theTab = "AnimalsEdits";
 	$theField = "AnimalID";
 	$thespec = "species";
-  $stmt3 = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib,  uploadDate, mediaRefs, contribRef, status, score  FROM Animals WHERE species='$theSpecies'");
+  $stmt3 = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib,  uploadDate, mediaRefs, contribRef, status, score  FROM Animals WHERE species='$theSpecies' and genus = '$theGenus'");
 
   $stmt3->bind_result($animID, $phylum, $subPhylum, $class, $subClass, $order, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $uploadDate, $mediaRefs, $contribRef, $status, $currScore);	
   $stmt3->execute();
@@ -233,6 +235,7 @@ $thespec = "";
   <div id=\"imgGrid\">$picList </div>
   <form name=\"editForm\" action=\"../../cgi-bin/IBISeditStuff.php3\" method=\"POST\" enctype=\"multipart/form-data\" class=\"hiddentext\">
     <input type=\"text\" name=\"thecat\" id=\"thecat\" class=\"hiddentext\" value=\"$theCat\"/>
+    <input type=\"text\" name=\"genref\" id=\"genRef\" class=\"hiddentext\" value=\"$genus\"/>
 	  <input type=\"text\" name=\"specref\" id=\"specRef\" class=\"hiddentext\" value=\"$theSpecies\"/>
 	   <input type=\"text\" name=\"conRef\" id=\"conRef\" class=\"hiddentext\" value=\"$contribRef\"/>
 	   <input type=\"text\" name=\"recID\" id=\"recID\" class=\"hiddentext\" value=\"$animID\"/>
@@ -326,6 +329,7 @@ $thespec = "";
   <form name=\"editForm\" action=\"../../cgi-bin/IBISeditStuff.php3\" method=\"POST\" enctype=\"multipart/form-data\" class=\"hiddentext\">
     <input type=\"text\" name=\"thecat\" id=\"thecat\" class=\"hiddentext\" value=\"$theCat\"/>
 	  <input type=\"text\" name=\"specref\" id=\"specRef\" class=\"hiddentext\" value=\"$theSpecies\"/>
+	  
 	  <input type=\"text\" name=\"conRef\" id=\"conRef\" class=\"hiddentext\" value=\"$contribRef\"/>
 	  <input type=\"text\" name=\"recID\" id=\"recID\" class=\"hiddentext\" value=\"$minID\"/>
 	  
@@ -417,10 +421,7 @@ print "<div id=viewsBlock><label>Viewed <span id=Vcount>$viewC</span> Times</lab
 </div>
 	<div id=\"commentBlock\" display=\"none\">
 		<label>You have given this page a low score, You can...</label></br>
-		<a href=\"http://192.168.43.132/ibis/IBISregistration.html\" class=\"littleDD linksclass\">Register as a contributer and edit it</a> or</br>
-		<label>Write a note to the person who edited it last</label></br>
-		<textarea id=\"edNotes\" name=\"Ednotes\" class=\"notes\"></textarea></br>
-		<input type=\"button\" class=\"button\" value=\"Submit Note\" onclick=\"submitNote()\"/>
+		<a href=\"http://192.168.43.132/ibis/IBISregistration.html\" class=\"littleDD linksclass\">Register as a contributer and edit it</a> </br>
 		<input type=\"button\" class=\"button\" value=\"Dismiss\" onclick=\"dismissNote()\"/>
 	</div>
 	

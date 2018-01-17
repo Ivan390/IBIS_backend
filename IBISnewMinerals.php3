@@ -6,25 +6,24 @@
 	if (!$guest_acc){
 		print "the include file was not included <br>";
 	}
-	$mysqli = new mysqli('192.168.43.132', "$contrib_acc", "$contrib_pass", 'IBIS');
+	$mysqli = new mysqli('localhost', "$contrib_acc", "$contrib_pass", 'IBIS');
   if ($mysqli->connect_error){
    	die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
   }
- $MainBackButton = '<div id="pgButtons" class="littleDD">
+ 	$buttons = '<div id="pgButtons" class="littleDD">
          <a href="/ibis/IBISmain.html" class="buttonclass littleDD">Back to Main Screen</a>
+         <a href="/ibis/IBISnewMinerals.html" class="buttonclass littleDD">Enter another</a>
         </div>';
+  $message = "";
 // print "$MainBackButton <br>";
 	if ($_POST['Akingdom'] == "Minerals"){
- 	$BackButton = '
- 		<div id="pgButtons" class="littleDD">
-    	<a href="/ibis/IBISnewMinerals.html" class="buttonclass littleDD">Enter another</a>
-    </div>';
  	$prefix = "min";
- 	$fileList ="";
- include ("IBIScollectFunctions.php3");
-  print "Data received....processing will follow <br>";
-	$stmt3 = $mysqli->prepare("INSERT INTO Minerals (MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses, mediaRefs, contribRef, uploadDate, distrib, origDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")or die ("could not prepare statement 3 <br>");
-	$stmt3->bind_param('ssssssssssssssssssssss', $minID, $Mname, $Mgroup, $crystalsys, $habit, $chemform, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $Muses, $Mediarefs, $McontribRef, $Muploaddate, $distrib, $origDate );
+
+	 	include ("IBIScollectFunctions.php3");
+	
+	  	
+	$stmt3 = $mysqli->prepare("INSERT INTO Minerals (MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses, mediaRefs, contribRef, uploadDate, distrib, origDate, hasImage) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")or die ("could not prepare statement 3 <br>");
+	$stmt3->bind_param('sssssssssssssssssssssss', $minID, $Mname, $Mgroup, $crystalsys, $habit, $chemform, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $Muses, $Mediarefs, $McontribRef, $Muploaddate, $distrib, $origDate, $haspic );
 	$minID = 0;
 	$Mname = trim(array_key_exists('Mname',$_POST)?$_POST['Mname']: null); 
 	$Mgroup = trim(array_key_exists('Mname',$_POST)?$_POST['Mgroup']: null);
@@ -42,22 +41,47 @@
 	$origin = trim(array_key_exists('Morigin',$_POST)?$_POST['Morigin']: null);
 	$characteristics = trim(array_key_exists('Mcharacteristics',$_POST)?$_POST['Mcharacteristics']: null);
 	$Mediarefs = $fileList;
+	if ($fileList == ""){
+	$haspic = "no";
+	}else{
+	$haspic = "yes";
+	} 
 	$origDate = $uploadDate;
 	$Muploaddate = date('Y-m-d H:i:s');;
 	$McontribRef =  trim(array_key_exists('contributer_ID',$_POST)?$_POST['contributer_ID']: null);
 	$distrib = trim(array_key_exists('Mdistrib',$_POST)?$_POST['Mdistrib']: null);
 	$Muses = trim(array_key_exists('Muses',$_POST)?$_POST['Muses']: null);
+
 	$stmt3->execute();
 	if ($stmt3->affected_rows == -1){
-// this means the transaction could nt be completed and I should put something 
-// to deal with that condition.		
-		$dataError = "uploadError";
-		$dataMessg = "This transaction could not be completed";
+		$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/notokeydoke.png\"><span id=\"messSpan\">Something went wrong please check your connection</span>";
 	}
+	$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/okeydoke.png\"><span id=\"messSpan\">Data upload successful</span>";
 	$stmt3->close();		
 }
-print "this is the end of the script<br>";
-print "$MainBackButton $BackButton ";
-//print "$fileMessg $fileError";
-//print "$dataMessg $dataError";
+$resultWinHead = '<!DOCTYPE html>
+<html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <title>
+            I B I S - Uploads Form
+        </title>
+        <script type="text/javascript" src="http://192.168.43.132/ibis/jquery-1.11.3.js"> </script>
+			  <link rel="stylesheet"
+  				type="text/css"
+    			href="http://192.168.43.132/ibis/DataResult.css"
+   			>
+   			<link rel="stylesheet"
+  				type="text/css"
+    			href="http://192.168.43.132/ibis/IBIS_maincss.css"
+   			>
+   			</head>
+    <body id="AllContainer" class="ac" >
+    '.$buttons.'
+		  <div id="subContainer">
+		  <div id="resultsDiv"><div id="dataM">'.$message.'</div><div id="fileM">'.$Imgmessage.'</div>';
+$resultWinFoot='</div>
+		  </div>
+    </body></html>';		  
+print "$resultWinHead.$resultWinFoot ";
 ?>

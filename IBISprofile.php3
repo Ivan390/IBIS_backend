@@ -20,7 +20,12 @@ $htmlHead = '<!DOCTYPE html>
         type="text/css"
         href="http://192.168.43.132/ibis/IBIS_maincss.css"
       />
-      
+      <script type="text/javascript">
+	 			$(document).ready(function(){
+	 	 	$(\'#regPic\').change(handleFileSelect);	
+	 		
+	 	})
+	 </script>
     
     </head> 
     <body onload=initForm()>
@@ -46,13 +51,13 @@ if ($mysqli->connect_error){
 	die('Connect Error ('.$mysqli->connect_errno.')' .$mysqli->connect_error);
 }
 
-$stmnt1 = $mysqli->prepare("select name, lastname, userName, Media.serverpath,regDate, email from Contributers, Media where Contributers.passwrd = \"$userName\" and Contributers.mediaRef = Media.filename");
+$stmnt1 = $mysqli->prepare("select name, lastname, userName, Media.serverpath,regDate, email from Contributers, Media where Contributers.ContribID = \"$userName\" and Contributers.mediaRef = Media.filename") or die ("could not prepare statement " . $mysqli->error);
 $stmnt1->bind_result($fName, $lName, $username, $mediapath, $regDate, $emailA );     
 $stmnt1->execute();
 $stmnt1->fetch() ;
 $stmnt1->close();
 
-$stmnt2 = $mysqli->prepare("select sum(score) from Vegetables where contribRef = \"$username\"");
+$stmnt2 = $mysqli->prepare("select sum(score) from Vegetables where contribRef = \"$userName\"");
 $stmnt2->bind_result($vegSum);
 $stmnt2->execute();
 $stmnt2->fetch();
@@ -60,7 +65,7 @@ $stmnt2->close();
 if (!$vegSum){
 $vegSum = 0;
 }
-$stmnt3 = $mysqli->prepare("select sum(score) from Animals where contribRef = \"$username\"");
+$stmnt3 = $mysqli->prepare("select sum(score) from Animals where contribRef = \"$userName\"");
 $stmnt3->bind_result($animSum);
 $stmnt3->execute();
 $stmnt3->fetch();
@@ -68,7 +73,7 @@ $stmnt3->close();
 if (!$animSum){
 $animSum = 0;
 }
-$stmnt4 = $mysqli->prepare("select sum(score) from Minerals where contribRef = \"$username\"");
+$stmnt4 = $mysqli->prepare("select sum(score) from Minerals where contribRef = \"$userName\"");
 $stmnt4->bind_result($minSum);
 $stmnt4->execute();
 $stmnt4->fetch();
@@ -80,9 +85,9 @@ $contribScore = $vegSum + $animSum + $minSum;
 $mediapath = str_replace("$imagesfroot", "$imageshroot", $mediapath);
 $mediapath = str_replace("$imagesdroot", "$imageshroot", $mediapath);
 $mediapath = str_replace("$imagesNotebookroot","$imageshroot", $mediapath);
-
+$adminDiv = "<div id=\"adminDiv\"><input type=\"button\" value=\"Edit your details\" onclick=\"loadRegWin()\" /><input type=\"button\" value=\"Dismiss\" onclick=\"closeRegWin()\" style=\"display:none;\" id=\"closewin\" /></div></div>";
 $infoDiv = "<div id=\"informDiv\">
-<span id=\"nameSpan\">$fName $lName </span></br><span id=\"imageSpan\"><img src=\"$mediapath\" class=\"optImage\"/></span><p>Your current score is</p><span id=\"scoreSpan\">$contribScore</span></div>";
-print("$htmlHead $infoDiv $htmlClose");
+<span id=\"nameSpan\">$fName $lName </span></br><span id=\"imageSpan\"><img src=\"$mediapath\" class=\"optImage\"/></span><p>Your current score is</p><span id=\"scoreSpan\">$contribScore</span><input type=\"text\" name=\"userName\" value=\"$userName\" class=\"hiddentext\" id=\"userRef\"/>";
+print("$htmlHead $infoDiv $adminDiv $htmlClose");
 
 ?>

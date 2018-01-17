@@ -9,8 +9,9 @@ returns a custom webpage to the browser in which the user can edit the data
 $vegcss = 'vegedit.css';	// ************
 $mincss = 'minedit.css';	// style sheets
 $animcss = 'animedit.css';  // ************
-$theCat = array_key_exists('thecat',$_POST)?$_POST['thecat']: null; // post variable from IBISgetDetails.php3
-$theSpecies = array_key_exists('specref',$_POST)?$_POST['specref']: null; // post variable from IBISgetDetails.php3
+$theCat = array_key_exists('thecat',$_REQUEST)?$_REQUEST['thecat']: null; // post variable from IBISgetDetails.php3
+$theSpecies = array_key_exists('specref',$_REQUEST)?$_REQUEST['specref']: null; // post variable from IBISgetDetails.php3
+$theGenus = array_key_exists('genref',$_REQUEST)?$_REQUEST['genref']: null; 
 $imglistOptions = ""; // list that holds the mediarefs for the database query that returns the serverpath and tags
 $qClose = ';';
 $picList ="";
@@ -30,8 +31,8 @@ foreach ($mediaList as $mediaRef){ // loop through the array
 	} 
   	$prestate = $imglistOptions.$qClose; // ...
   	$prestmt = str_replace(" or ;", ";", $prestate); // ...>
-  	$stmtQ = "SELECT serverpath, tags FROM Media WHERE ".$prestmt; // construct database query 
-  	$stmt4 = $mysqli->prepare($stmtQ); 
+  	$stmtQ = "SELECT serverpath, tags FROM Media WHERE $prestmt"; // construct database query 
+  	$stmt4 = $mysqli->prepare($stmtQ) or die ("cant call Media ".$mysqli->error ); 
   	$stmt4->bind_result($imgpath, $imgtag); 
   	$stmt4->execute();
   	while ($stmt4->fetch()){
@@ -54,7 +55,7 @@ include ("IBISvars.inc");
   	}
 	if ($theCat == "vegetables"){ // Vegetables editing process for getting existing dataset
 		$styleSheet = $vegcss;
-  		$stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef  FROM Vegetables WHERE species='$theSpecies'")or die("cannot prepare select statement");
+  		$stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef  FROM Vegetables WHERE species='$theSpecies' and genus = '$theGenus'")or die("cannot prepare select statement");
   		$stmt3->bind_result($VegetableID, $phylum, $subPhylum, $class, $subClass, $Vorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $ecology, $distrib_Notes, $uses, $growing, $category, $status, $uploadDate, $mediaRefs, $contribRef)or die("cannot bind dataset result");	
   		$stmt3->execute();
   		$stmt3->fetch();
@@ -118,6 +119,7 @@ include ("IBISvars.inc");
 	<div id="oldImages" class="imgHolder">	
 		<label class="labelclass">Existing Images</labelclass>'
 		 .$picList.'
+		<input type="text" class="hiddentext" id="imgCounter" size="10" value="" />
 		</div>
 		<div id="oldTags"></div>
 		<div id="newImages">
@@ -125,16 +127,16 @@ include ("IBISvars.inc");
 	  	<input type="file" name="ibismedia[]" id="mediaPic" class="littleDD" multiple />
 	  	<div id="imgDisplay"><label class="labelclass">New Images</labelclass></div>
 			<div id="optionsDsplay" class="littleDD" style="display : none;"></div> 
-			<textarea name="newtagslist" id="newtagslist" class=""></textarea>
-			<textarea name="editedtagslist" id="editedtagslist" class=""></textarea>
-			<textarea name="imgDeletelist" id="imgDeletelist" class=""></textarea>
+			<textarea name="newtagslist" id="newtagslist" class="hiddentext"></textarea>
+			<textarea name="editedtagslist" id="editedtagslist" class="hiddentext"></textarea>
+			<textarea name="imgDeletelist" id="imgDeletelist" class="hiddentext"></textarea>
 		</div>
 	</fieldset>
 </form>';
 }
 if ($theCat == "animals"){  // Animals editing process for getting existing dataset
 	$styleSheet = $animcss;
-  if (!$stmtAnim = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef  FROM Animals WHERE species='$theSpecies'")){
+  if (!$stmtAnim = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef  FROM Animals WHERE species='$theSpecies' and genus = '$theGenus'")){
   	print $mysqli->error;
   }
   $stmtAnim->bind_result($AnimalID,$phylum, $subPhylum, $class, $subClass, $Aorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $status, $uploadDate, $mediaRefs, $contribRef) or die ("could not bind result");	
@@ -196,6 +198,7 @@ if ($theCat == "animals"){  // Animals editing process for getting existing data
 		<div id="oldImages" class="imgHolder">	
 			<label class="labelclass">Existing Images</labelclass>'
 		 .$picList.'
+		 <input type="text" class="hiddentext" id="imgCounter" size="10" value=""/>
 		</div>
 		<div id="oldTags"></div>
 		<div id="newImages">
@@ -213,11 +216,12 @@ if ($theCat == "animals"){  // Animals editing process for getting existing data
 }		
 if ($theCat == "minerals"){ // call function to resolve mediaRefs to filepaths
 	$styleSheet = $mincss;
-  $stmtAnim = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses,  mediaRefs, contribRef, uploadDate, distrib  FROM Minerals WHERE name='$theSpecies'");
-  $stmtAnim->bind_result($MineralID, $name, $Mgroup, $crystalSys, $habit, $chemForm, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $uses, $mediaRefs, $contribRef, $uploadDate, $distribution );	
+  $stmtAnim = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses,  mediaRefs, contribRef, uploadDate, distrib  FROM Minerals WHERE name='$theSpecies'") or die($mysqli->error);
+  $stmtAnim->bind_result($MineralID, $name, $Mgroup, $crystalSys, $habit, $chemForm, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $uses, $mediaRefs, $contribRef, $uploadDate, $distribution ) or die ("could not bind stuff ".$mysqli->error);	
   $stmtAnim->execute();
   $stmtAnim->fetch();
   $stmtAnim->close();
+  print "$crystalSys</br>";
 	$picList = makePicList($mediaRefs); // call function to resolve mediaRefs to filepaths
 	$FormOutput = '
 <form  name="EditsForm" action="../../cgi-bin/IBISeditMinerals.php3" method="POST" enctype="multipart/form-data" class="">
@@ -271,6 +275,7 @@ if ($theCat == "minerals"){ // call function to resolve mediaRefs to filepaths
 		<div id="oldImages" class="imgHolder">	
 			<label class="labelclass">Existing Images</labelclass>'
 		 .$picList.'
+		 <input type="text" class="hiddentext" id="imgCounter" size="10" value=""/>
 		</div>
 		<div id="oldTags"></div>
 		<div id="newImages">
@@ -278,9 +283,9 @@ if ($theCat == "minerals"){ // call function to resolve mediaRefs to filepaths
   	  <input type="file" name="ibismedia[]" id="mediaPic" class="littleDD" multiple />
   	  <div id="imgDisplay"><label class="labelclass">New Images</labelclass></div>
 		  <div id="optionsDsplay" class="littleDD" style="display : none;"></div> 
-		  <textarea name="newtagslist" id="newtagslist"class=""></textarea>
-		  <textarea name="editedtagslist" id="editedtagslist" class=""></textarea>
-		<textarea name="imgDeletelist" id="imgDeletelist" class=""></textarea>
+		  <textarea name="newtagslist" id="newtagslist"class="hiddentext"></textarea>
+		  <textarea name="editedtagslist" id="editedtagslist" class="hiddentext"></textarea>
+		<textarea name="imgDeletelist" id="imgDeletelist" class="hiddentext"></textarea>
 	  </div>
   </div>
 </fieldset>
@@ -304,9 +309,12 @@ $htmlHead = '<!DOCTYPE html>
 	 	 	$(\'#mediaPic\').change(handleFileSelect);	
 	 		if (sessionStorage.userRef){
 	 	 	 sessVar = sessionStorage.userRef;
-	 	 	 sesA = sessVar.split(":");
-	 	 	 conID = sesA[1];
+	 	 	 sesA = sessVar.split("::");
+	 	 	 conID = sesA[0];
 	 	 	 $("#contrib_ID").val(conID);
+	 	 	 var imgCount = document.images;
+	 	 	 var counterV = $(".imgClass").length;
+	 	 	 $("#imgCounter").val(counterV);
 	 	 	 }else {
 	    alert("You should really not be on this page!")
 	    document.location = "IBISmain.html";
