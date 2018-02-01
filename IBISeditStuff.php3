@@ -1,11 +1,4 @@
 <?php
-/*
-this gets called from IBISgetDetails.php3
-it receives 2 post variables and depending on their value, 
-retrieves the relevant data from the database and 
-returns a custom webpage to the browser in which the user can edit the data
-*/
-
 $vegcss = 'vegedit.css';	// ************
 $mincss = 'minedit.css';	// style sheets
 $animcss = 'animedit.css';  // ************
@@ -18,17 +11,18 @@ $picList ="";
 $theHeading = ucfirst($theCat);
 
 function makePicList($mediaRefers){ // function that processes the mediaRefs returned from the database 
-global $mysqli, $imagesfroot, $imagesdroot, $imageshroot, $imagesNotebookroot; 
-$imglistOptions = "";
-$qClose = ';';
-$picListfunc ="";
-$mediaList = explode(":", $mediaRefers); // explode the list references into an array
-foreach ($mediaList as $mediaRef){ // loop through the array
-	if ($mediaRef == ""){ // if the variable is empty continue with the next one
-  	continue;
-  	}
-	$imglistOptions .= "filename='$mediaRef' or "; // construct the query's WHERE clause ...
+	global $mysqli, $imagesfroot, $imagesdroot, $imageshroot, $imagesNotebookroot; 
+	$imglistOptions = "";
+	$qClose = ';';
+	$picListfunc ="";
+	$mediaList = explode(":", $mediaRefers); // explode the list references into an array
+	foreach ($mediaList as $mediaRef){ // loop through the array
+		if ($mediaRef == ""){ // if the variable is empty continue with the next one
+  			continue;
+  		}
+		$imglistOptions .= "filename='$mediaRef' or "; // construct the query's WHERE clause ...
 	} 
+	print "$imglistOptions</br>";
   	$prestate = $imglistOptions.$qClose; // ...
   	$prestmt = str_replace(" or ;", ";", $prestate); // ...>
   	$stmtQ = "SELECT serverpath, tags FROM Media WHERE $prestmt"; // construct database query 
@@ -69,64 +63,64 @@ include ("IBISvars.inc");
 		<input type="text" id="VegetableID" name="VegetableID" class="hiddentext" value="'.$VegetableID.'">
 		<input type="text" id="mediarefs" name="mediarefs" class="hiddentext" value="'.$mediaRefs.'">
 		<span class="inputClass"><label class="labelClass">Phylum</label>
-		<input type="text" id="Phylum" name="phylum" class="nothiddentext" value="'.$phylum.'"></span>
+			<input type="text" id="Phylum" name="phylum" class="nothiddentext" value="'.$phylum.'"></span>
 		<span class="inputClass"><label class="labelClass">sub-Phylum</label>
-		<input type="text" id="subPhylum" name="subPhylum" class="nothiddentext" value="'.$subPhylum.'"></span>
+			<input type="text" id="subPhylum" name="subPhylum" class="nothiddentext" value="'.$subPhylum.'"></span>
 		<span class="inputClass"><label class="labelClass">Class</label>
-	  	<input type="text" id="Class" name="class" class="nothiddentext" value="'.$class.'"></span>
+		  	<input type="text" id="Class" name="class" class="nothiddentext" value="'.$class.'"></span>
 		<span class="inputClass"><label class="labelClass">sub-Class</label>
-	  	<input type="text" id="subClass" name="subClass" class="nothiddentext" value="'.$subClass.'"></span>
+	  		<input type="text" id="subClass" name="subClass" class="nothiddentext" value="'.$subClass.'"></span>
 		<span class="inputClass"><label class="labelClass">Order</label>
-		<input type="text" id="Order" name="Vorder" class="nothiddentext" value="'.$Vorder.'"></span>
+			<input type="text" id="Order" name="Vorder" class="nothiddentext" value="'.$Vorder.'"></span>
 		<span class="inputClass"><label class="labelClass">sub-Order</label>
-		<input type="text" id="subOrder" name="subOrder" class="nothiddentext" value="'.$subOrder.'"></span>
+			<input type="text" id="subOrder" name="subOrder" class="nothiddentext" value="'.$subOrder.'"></span>
 		<span class="inputClass"><label class="labelClass">Family</label>
-		<input type="text" id="Family" name="family" class="nothiddentext" value="'.$family.'"></span>
+			<input type="text" id="Family" name="family" class="nothiddentext" value="'.$family.'"></span>
 		<span class="inputClass"><label class="labelClass">subFamily</label>
-		<input type="text" id="sub-Family" name="subFamily" class="nothiddentext" value="'.$subFamily.'"></span>
+			<input type="text" id="sub-Family" name="subFamily" class="nothiddentext" value="'.$subFamily.'"></span>
 		<span class="inputClass"><label class="labelClass">Genus</label>
-		<input type="text" id="Genus" name="genus" class="nothiddentext" value="'.$genus.'"></span>
+			<input type="text" id="Genus" name="genus" class="nothiddentext" value="'.$genus.'"></span>
 		<span class="inputClass"><label class="labelClass">sub-Genus</label>
-		<input type="text" id="subGenus" name="subGenus" class="nothiddentext" value="'.$subGenus.'"></span>
+			<input type="text" id="subGenus" name="subGenus" class="nothiddentext" value="'.$subGenus.'"></span>
 		<span class="inputClass"><label class="labelClass">species</label>
-		<input type="text" id="Species" name="species" class="nothiddentext" value="'.$species.'"></span>
+			<input type="text" id="Species" name="species" class="nothiddentext" value="'.$species.'"></span>
 		<span class="inputClass"><label class="labelClass">subSpecies</label>
-		<input type="text" id="subSpecies" name="subSpecies" class="nothiddentext" value="'.$subSpecies.'"></span>
+			<input type="text" id="subSpecies" name="subSpecies" class="nothiddentext" value="'.$subSpecies.'"></span>
 		<span class="inputClass"><label class="labelClass">Common Names</label>
-		<input type="text" id="Common_Names" name="common_Names" class="nothiddentext" value="'.$common_Names.'"></span>
+			<input type="text" id="Common_Names" name="common_Names" class="nothiddentext" value="'.$common_Names.'"></span>
 		<span class="inputClass"><label class="labelClass">name_Notes</label>
-		<textarea id="Name_Notes" name="name_Notes" class="nothiddentext">'.$name_Notes.'</textarea></span>
+			<textarea id="Name_Notes" name="name_Notes" class="nothiddentext">'.$name_Notes.'</textarea></span>
 		<span class="inputClass"><label class="labelClass">Description</label>
-		<textarea id="Description" name="description" class="nothiddentext">'.$description.'</textarea></span>
+			<textarea id="Description" name="description" class="nothiddentext">'.$description.'</textarea></span>
 		<span class="inputClass"><label class="labelClass">Ecology</label>
-		<textarea id="Ecology" name="ecology" class="nothiddentext">'.$ecology.'</textarea></span>
+			<textarea id="Ecology" name="ecology" class="nothiddentext">'.$ecology.'</textarea></span>
 		<span class="inputClass"><label class="labelClass">Distribution</label>
-		<textarea id="Distrib_Notes" name="distrib_Notes" class="nothiddentext">'.$distrib_Notes.'</textarea></span>
+			<textarea id="Distrib_Notes" name="distrib_Notes" class="nothiddentext">'.$distrib_Notes.'</textarea></span>
 		<span class="inputClass"><label class="labelClass">Uses</label>
-		<textarea id="Uses" name="uses" class="nothiddentext">'.$uses.'</textarea></span>
+			<textarea id="Uses" name="uses" class="nothiddentext">'.$uses.'</textarea></span>
 		<span class="inputClass"><label class="labelClass">Growing</label>
-		<textarea id="Growing" name="growing" class="nothiddentext">'.$growing.'</textarea></span>
+			<textarea id="Growing" name="growing" class="nothiddentext">'.$growing.'</textarea></span>
 		<span class="inputClass"><label class="labelClass">Category</label>
-		<textarea id="category" name = "category" class="nothiddentext">'.$category.'</textarea></span>
+			<textarea id="category" name = "category" class="nothiddentext">'.$category.'</textarea></span>
 		<span class="inputClass"><label class="labelClass">Status</label>
-		<textarea id="status" name = "status" class="nothiddentext">'.$status.'</textarea></span>
+			<textarea id="status" name = "status" class="nothiddentext">'.$status.'</textarea></span>
 		<span class="inputClass"><label class="labelClass nothiddentext">Editing Comment</label>
-		<textarea name="editComnt" id="editComnt" class="nothiddentext"></textarea></span>
+			<textarea name="editComnt" id="editComnt" class="nothiddentext"></textarea></span>
 		<span class="inputClass"><label class="labelClass hiddentext">Contributer Ref</label>
-		<input type="text" name="contributer_ID" id="contrib_ID" class="hiddentext" value=""></span>
+			<input type="text" name="contributer_ID" id="contrib_ID" class="hiddentext" value=""></span>
 	</div>
 	<div id="images" class="littleDD">
-	<div id="oldImages" class="imgHolder">	
-		<label class="labelclass">Existing Images</labelclass>'
-		 .$picList.'
-		<input type="text" class="hiddentext" id="imgCounter" size="10" value="" />
+		<div id="oldImages" class="imgHolder">	
+			<label class="labelclass">Existing Images</labelclass>'
+			 .$picList.'
+			<input type="text" class="hiddentext" id="imgCounter" size="10" value="" />
 		</div>
 		<div id="oldTags"></div>
 		<div id="newImages">
  			<p class="labelclass">Add Media</p>
-	  	<input type="file" name="ibismedia[]" id="mediaPic" class="littleDD" multiple />
+	  		<input type="file" name="ibismedia[]" id="mediaPic" class="littleDD" multiple />
 	  	<div id="imgDisplay"><label class="labelclass">New Images</labelclass></div>
-			<div id="optionsDsplay" class="littleDD" style="display : none;"></div> 
+		<div id="optionsDsplay" class="littleDD" style="display : none;"></div> 
 			<textarea name="newtagslist" id="newtagslist" class="hiddentext"></textarea>
 			<textarea name="editedtagslist" id="editedtagslist" class="hiddentext"></textarea>
 			<textarea name="imgDeletelist" id="imgDeletelist" class="hiddentext"></textarea>
@@ -136,15 +130,15 @@ include ("IBISvars.inc");
 }
 if ($theCat == "animals"){  // Animals editing process for getting existing dataset
 	$styleSheet = $animcss;
-  if (!$stmtAnim = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef  FROM Animals WHERE species='$theSpecies' and genus = '$theGenus'")){
+if (!$stmtAnim = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef  FROM Animals WHERE species='$theSpecies' and genus = '$theGenus'")){
   	print $mysqli->error;
-  }
-  $stmtAnim->bind_result($AnimalID,$phylum, $subPhylum, $class, $subClass, $Aorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $status, $uploadDate, $mediaRefs, $contribRef) or die ("could not bind result");	
-  $stmtAnim->execute();
-  $stmtAnim->fetch();
-  $stmtAnim->close();
-  $picList = makePicList($mediaRefs); // call function to resolve mediaRefs to filepaths
-	$FormOutput = '
+}
+$stmtAnim->bind_result($AnimalID,$phylum, $subPhylum, $class, $subClass, $Aorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $status, $uploadDate, $mediaRefs, $contribRef) or die ("could not bind result");	
+$stmtAnim->execute();
+$stmtAnim->fetch();
+$stmtAnim->close();
+$picList = makePicList($mediaRefs); // call function to resolve mediaRefs to filepaths
+$FormOutput = '
 <form  name="EditsForm" action="../../cgi-bin/IBISeditAnimals.php3" method="POST" enctype="multipart/form-data" class="">
 	<fieldset id="dataForm" class="nothiddentext">
 		<input type="text" id="kingdom" name="kingdom" class="hiddentext" value="Animalia">
@@ -216,14 +210,14 @@ if ($theCat == "animals"){  // Animals editing process for getting existing data
 }		
 if ($theCat == "minerals"){ // call function to resolve mediaRefs to filepaths
 	$styleSheet = $mincss;
-  $stmtAnim = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses,  mediaRefs, contribRef, uploadDate, distrib  FROM Minerals WHERE name='$theSpecies'") or die($mysqli->error);
-  $stmtAnim->bind_result($MineralID, $name, $Mgroup, $crystalSys, $habit, $chemForm, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $uses, $mediaRefs, $contribRef, $uploadDate, $distribution ) or die ("could not bind stuff ".$mysqli->error);	
-  $stmtAnim->execute();
-  $stmtAnim->fetch();
-  $stmtAnim->close();
-  print "$crystalSys</br>";
-	$picList = makePicList($mediaRefs); // call function to resolve mediaRefs to filepaths
-	$FormOutput = '
+	$stmtAnim = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses,  mediaRefs, contribRef, uploadDate, distrib  FROM Minerals WHERE name='$theSpecies'") or die($mysqli->error);
+	  $stmtAnim->bind_result($MineralID, $name, $Mgroup, $crystalSys, $habit, $chemForm, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $uses, $mediaRefs, $contribRef, $uploadDate, $distribution ) or die ("could not bind stuff ".$mysqli->error);	
+	  $stmtAnim->execute();
+	  $stmtAnim->fetch();
+	  $stmtAnim->close();
+	  print "$crystalSys</br>";
+		$picList = makePicList($mediaRefs); // call function to resolve mediaRefs to filepaths
+		$FormOutput = '
 <form  name="EditsForm" action="../../cgi-bin/IBISeditMinerals.php3" method="POST" enctype="multipart/form-data" class="">
 	<fieldset id="dataForm" class="nothiddentext">
 		<input type="text" id="kingdom" name="kingdom" class="hiddentext" value="Minerals">
@@ -301,31 +295,30 @@ $htmlHead = '<!DOCTYPE html>
 	    I B I S - Edit '.$theHeading.'  
     </title>
     <script type="text/javascript" src="http://192.168.43.132/ibis/jquery-1.11.3.js"> </script>
-
     </div></div><script type="text/javascript" src="http://192.168.43.132/ibis/fileselect.js"></script>
       <script type="text/javascript" src="http://192.168.43.132/ibis/dateshorts.js"></script>
 		 <script type="text/javascript">
-	 	$(document).ready(function(){
-	 	 	$(\'#mediaPic\').change(handleFileSelect);	
-	 		if (sessionStorage.userRef){
-	 	 	 sessVar = sessionStorage.userRef;
-	 	 	 sesA = sessVar.split("::");
-	 	 	 conID = sesA[0];
-	 	 	 $("#contrib_ID").val(conID);
-	 	 	 var imgCount = document.images;
-	 	 	 var counterV = $(".imgClass").length;
-	 	 	 $("#imgCounter").val(counterV);
-	 	 	 }else {
-	    alert("You should really not be on this page!")
-	    document.location = "IBISmain.html";
-	    }
-	 	})
-	 </script>
-		  <link rel="stylesheet"
-	    type="text/css"
-      href="http://192.168.43.132/ibis/'.$styleSheet.'"
-    >
-   </head>
+	 		$(document).ready(function(){
+		 	 	$(\'#mediaPic\').change(handleFileSelect);	
+		 		if (sessionStorage.userRef){
+			 	 	 sessVar = sessionStorage.userRef;
+			 	 	 sesA = sessVar.split("::");
+			 	 	 conID = sesA[0];
+			 	 	 $("#contrib_ID").val(conID);
+			 	 	 var imgCount = document.images;
+			 	 	 var counterV = $(".imgClass").length;
+			 	 	 $("#imgCounter").val(counterV);
+			 	}else {
+					alert("You should really not be on this page!")
+					document.location = "http://192.168.43.132/ibis/IBISmain.html";
+				}
+	 		})
+	 	</script>
+		<link rel="stylesheet"
+	    	type="text/css"
+      		href="http://192.168.43.132/ibis/'.$styleSheet.'"
+    	>
+   		</head>
    <body name="VegInputBody" onload="starttime()" >
 	   <div id="allContainer" class="ac">
 	   <div id="dateTime">
@@ -341,10 +334,7 @@ $htmlHead = '<!DOCTYPE html>
 	        <a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD"><img src="" alt="">Back to Main Screen</a>
         </div>
         <div id="detail_fs_min" class="littleDD" >';
-       
 $htmlClose = '</body></html>';	 			
-
 $htmlPage = $htmlHead.$FormOutput.$htmlClose;
 print "$htmlPage";
 ?>
-

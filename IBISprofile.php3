@@ -1,12 +1,4 @@
 <?php
-/*links to user profile page
-on this page a Contributer can do some things like
-go through all the pages edited by him
-get an aggregate score of all pages edited by him
-change personal details and profile pic
-also maybe some functions to access some system or custom functions
-
-*/
 $htmlHead = '<!DOCTYPE html>
 <html>
   <head>
@@ -23,13 +15,11 @@ $htmlHead = '<!DOCTYPE html>
       <script type="text/javascript">
 	 			$(document).ready(function(){
 	 	 	$(\'#regPic\').change(handleFileSelect);	
-	 		
 	 	})
 	 </script>
-    
     </head> 
     <body onload=initForm()>
-      <div id="DETallContainer" class="ac">
+	    <div id="DETallContainer" class="ac">
         <div id="dateTime">
 	        <div id="dateBlock">The Date</div>
 	        <div id="timeBlock">The Time</div>       
@@ -38,7 +28,6 @@ $htmlHead = '<!DOCTYPE html>
 	        <img id="logo_image" src="/ibis/images/Logo1_fullsizetransp.png"  />
 	      </div><div id="pgButtons" class="littleDD">
 	        <a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD"><img src="" alt="">Back to Main Screen</a></div>';
-	      
 $htmlClose = '</body><html>';	
 $userName = $_GET['userN'];
 $userName = trim($userName);
@@ -56,14 +45,13 @@ $stmnt1->bind_result($fName, $lName, $username, $mediapath, $regDate, $emailA );
 $stmnt1->execute();
 $stmnt1->fetch() ;
 $stmnt1->close();
-
 $stmnt2 = $mysqli->prepare("select sum(score) from Vegetables where contribRef = \"$userName\"");
 $stmnt2->bind_result($vegSum);
 $stmnt2->execute();
 $stmnt2->fetch();
 $stmnt2->close();
 if (!$vegSum){
-$vegSum = 0;
+	$vegSum = 0;
 }
 $stmnt3 = $mysqli->prepare("select sum(score) from Animals where contribRef = \"$userName\"");
 $stmnt3->bind_result($animSum);
@@ -71,7 +59,7 @@ $stmnt3->execute();
 $stmnt3->fetch();
 $stmnt3->close();
 if (!$animSum){
-$animSum = 0;
+	$animSum = 0;
 }
 $stmnt4 = $mysqli->prepare("select sum(score) from Minerals where contribRef = \"$userName\"");
 $stmnt4->bind_result($minSum);
@@ -79,7 +67,7 @@ $stmnt4->execute();
 $stmnt4->fetch();
 $stmnt4->close();
 if (!$minSum){
-$minSum = 0;
+	$minSum = 0;
 }
 $contribScore = $vegSum + $animSum + $minSum;
 $mediapath = str_replace("$imagesfroot", "$imageshroot", $mediapath);
@@ -89,5 +77,4 @@ $adminDiv = "<div id=\"adminDiv\"><input type=\"button\" value=\"Edit your detai
 $infoDiv = "<div id=\"informDiv\">
 <span id=\"nameSpan\">$fName $lName </span></br><span id=\"imageSpan\"><img src=\"$mediapath\" class=\"optImage\"/></span><p>Your current score is</p><span id=\"scoreSpan\">$contribScore</span><input type=\"text\" name=\"userName\" value=\"$userName\" class=\"hiddentext\" id=\"userRef\"/>";
 print("$htmlHead $infoDiv $adminDiv $htmlClose");
-
 ?>

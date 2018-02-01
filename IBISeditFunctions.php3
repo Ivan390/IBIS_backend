@@ -3,6 +3,7 @@ $fileList ="";
 $tagCount = 0;
 $newTagList = "";
 $newName = "";
+$thumbDir = "/var/www/html/ibis/Data/Images/thumbails/";
 $upcount = count($_FILES['ibismedia']['name']); // get number of uploaded files
 $upfile = $_FILES['ibismedia']['name'][0]; // get the name of the first uploaded file
 if ($upcount > 0 && $upfile != ""){ // test if more than 0 upload and that the name is not empty 
@@ -14,58 +15,50 @@ if ($upcount > 0 && $upfile != ""){ // test if more than 0 upload and that the n
       $filecount = count($_FILES['ibismedia']['name']); // probably dont have to get this again here
       $postTags = explode("::", $_POST['newtagslist']); // explode the list of submitted new imagetags
       $postTagCnt = count($postTags);
-     
       foreach ($postTags as $tag){
 		for ($d=0; $d <= $filecount; $d++){ //
-	// if($posTags[$d] != "" ){
-	  	$justname = $_FILES['ibismedia']['name'][$d];// 
-	  	$temptag = $tag;
-	  	if (!strstr($temptag, $justname)) {
-	    	$tag = "$justname : no tag";
-	    	$newTagList .= "$tag::";
-	    	$tagCount++;
-	// continue;
-	  	}else {
-	    	$newTagList .= "$tag::";
-	    	$tagCount++;
-	  }
-	}
-    //}
-    }
-      $newPostTags = explode("::", $newTagList);
-		foreach ($newPostTags as $atag){
-			//print "$atag </br>";
+		  	$justname = $_FILES['ibismedia']['name'][$d];// 
+		  	$temptag = $tag;
+		  	if (!strstr($temptag, $justname)) {
+				$tag = "$justname : no tag";
+				$newTagList .= "$tag::";
+				$tagCount++;
+		  	}else {
+				$newTagList .= "$tag::";
+				$tagCount++;
+	  		}
 		}
- 		for ($i = 0; $i < $filecount; $i++){
- 			$numFile++;
- 			$justname = $_FILES['ibismedia']['name'][$i];
- 			$tmpFilePath = $_FILES['ibismedia']['tmp_name'][$i];
- 			$extn = substr($justname, -4);
- 			for ($c = 0; $c < $tagCount; $c++){
-	 			$tagstring = $newPostTags[$c];
-	 			// print "this is just the name : $justname </br>";
-	 			// print "This is the tagstring $tagstring </br>";
-	 			if (strstr( $tagstring, $justname )){ // if the tagstring contains the filename
-	 		 		$newName = $prefix.$numFile.$extn; // define the new filename
-	 			//	print "This is the new file name $newName";
- 					$tagItem = explode(" : ", $tagstring);
-	 		 		$justTag = $tagItem[1];
- 					//print "The new name ".$newName." : " .$justTag. "<br>" ;
- 				}
- 				if ($tagstring == "no tag added"){
-	 				$newName = $prefix.$numFile.$extn;
-	 				$justTag = "no tag added";
-	 			//	print "The new name ".$newName." : " .$justTag. "<br>" ;
-	 			}
-	 		 }
+  	}
+    $newPostTags = explode("::", $newTagList);
+	foreach ($newPostTags as $atag){
+			//print "$atag </br>";
+	}
+ 	for ($i = 0; $i < $filecount; $i++){
+ 		$numFile++;
+ 		$justname = $_FILES['ibismedia']['name'][$i];
+ 		$tmpFilePath = $_FILES['ibismedia']['tmp_name'][$i];
+ 		$extn = substr($justname, -4);
+ 		for ($c = 0; $c <= $tagCount; $c++){
+			$tagstring = $newPostTags[$c];
+			if (strstr( $tagstring, $justname )){ // if the tagstring contains the filename
+		 		$newName = $prefix.$numFile.$extn; // define the new filename
+ 				$tagItem = explode(" : ", $tagstring);
+		 		$justTag = $tagItem[1];
+ 			}
+ 			if ($tagstring == "no tag added"){
+				$newName = $prefix.$numFile.$extn;
+				$justTag = "no tag added";
+			}
+		 }
 		$uploadfile = $uploaddir.$newName;
-  	$tmpFilePath = $_FILES['ibismedia']['tmp_name'][$i];
+	    $thumbFile = $thumbDir.$newName;
+  		$tmpFilePath = $_FILES['ibismedia']['tmp_name'][$i];
 		if ( move_uploaded_file("$tmpFilePath", "$uploadfile") ) {
-  // print("File upload was successful <br>");
-  		$fileMessg = "File upload was successful <br>";
-  		exec("/usr/bin/convert -resize 400x300! $uploadfile $uploadfile");
-		  $fileList .= "$newName:";
-	 		$stmt2 = $mysqli->prepare("INSERT INTO Media ( MediaID, type, filename, tags, uploadDate, contribRef, uploaderType, serverpath ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )");
+			$fileMessg = "File upload was successful <br>";
+  			exec("/usr/bin/convert -resize 400x300! $uploadfile $uploadfile");
+  			exec("/usr/bin/convert -resize 120x90! $uploadfile $thumbFile");
+	  		$fileList .= "$newName:";
+			$stmt2 = $mysqli->prepare("INSERT INTO Media ( MediaID, type, filename, tags, uploadDate, contribRef, uploaderType, serverpath ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )");
 			$stmt2->bind_param('ssssssss', $MediaID, $Type, $filename, $tags, $uploadDate, $contribRef, $uploaderType, $servPath) or die ("cannot bind parameters.");
 			$MediaID = 0;
 			$Type = "image";
@@ -76,41 +69,34 @@ if ($upcount > 0 && $upfile != ""){ // test if more than 0 upload and that the n
 			$uploaderType = "c";
 			$servPath = $uploadfile;
 			$stmt2->execute();
-		//print "statement should have executed....</br>";
 			$dataMessg = "statement should have executed....</br>";
 			if ($stmt2->affected_rows == -1){
-	//	print "IBIS Upload failed <br>";
 				$dataError = "IBIS Media Upload failed <br>";
 			}else{
-			//print "IBIS Data upload succesful<br>";
 				$dataMessg = "IBIS Media upload succesful<br>";
 			}
 			$stmt2->close();
-  	  } else {
-  	    $dataError = "Media upload failed <br>";
-  	  }
-  	}
+  		 } else {
+  	  	 	$dataError = "Media upload failed <br>";
+  		 }
+	   }
 	}else {
- 		$dataError =  "Statement did not execute <br>";
+		$dataError =  "Statement did not execute <br>";
 	}
-	}else {
-	// print "no ibismedia to upload";
+}else {
+
 	}// end of mediaupload routine
-	// start running  through deletelist check
  	$existRefs = $_POST['mediarefs']; // get existing references from POST
  	$fileList .= "$existRefs:"; // fileList gets populated in mediaupload routine and the current refs get appended
  	$delList = array_key_exists('imgDeletelist', $_POST)?$_POST['imgDeletelist']:null;
  	if ($delList==""){
- 		//print "No images to delete";
- //continue;
+
  	}
   	$delListrefs = explode(":", $delList);
-//print "";
 	foreach ($delListrefs as $delItem){
-	//print "$delItem <br>";
  		$fileList = str_replace("$delItem", "", $fileList);
 	}
-$fileList = str_replace(" ", ":", $fileList);
+	$fileList = str_replace(" ", ":", $fileList);
 	$theTagList = array_key_exists("editedtagslist",$_POST)?$_POST['editedtagslist']:null;
 	if ($theTagList != null){
 	  	$newTagsList = explode("::", $theTagList);
@@ -120,20 +106,15 @@ $fileList = str_replace(" ", ":", $fileList);
 		    }
 		$fileTagList = explode(":", $tagItem);
 		if (!$fileTagList){
-    // print "no tags were added to the edited tag list";
-		
+// i should probably do something here
 		}else {
-
-    $theRef = trim($fileTagList[0]);
-		$theTag = trim($fileTagList[1]);
-		// print "$theRef : $theTag  <br>";
-		$theResult = $mysqli->prepare("update Media set tags='$theTag' where filename='$theRef'") or die ("could not update Media table". $mysqli->error);
-		$theResult->execute() or die ("could not execute tag update");
+		    $theRef = trim($fileTagList[0]);
+			$theTag = trim($fileTagList[1]);
+			$theResult = $mysqli->prepare("update Media set tags='$theTag' where filename='$theRef'") or die ("could not update Media table". $mysqli->error);
+			$theResult->execute() or die ("could not execute tag update");
 	}
-	}
-	
+}
 		//$mediaQuery = "update Media set tags='$theTag' where filename='$theRef'";
-	 	
-	}
-	
+}
+/*this script I need to check, it looks a mess*/	
 ?>

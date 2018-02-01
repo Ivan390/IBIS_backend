@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/xml; charset=utf-8" />
+    <meta name="viewport" content="width=device-width"/>
       <title> Details</title>
       <script type="text/javascript" src="http://192.168.43.132/ibis/jquery-1.11.3.js"> </script>
       <script type="text/javascript" src="http://192.168.43.132/ibis/Gmain.js"></script>
@@ -11,7 +12,12 @@
         type="text/css"
         href="http://192.168.43.132/ibis/IBIS_maincss.css"
       />
-      
+<link rel="stylesheet" type="text/css" media="only screen and (max-width: 500px)" href="http://192.168.43.132/ibis/smallerDevice.css" />       
+	<script type=text/javascript>
+		function closeThis(){
+			close();
+		}
+	</script>
     
     </head> 
     <body onload=initForm()>
@@ -23,21 +29,23 @@
 	      <div id="logo_image_holder">
 	        <img id="logo_image" src="/ibis/images/Logo1_fullsizetransp.png"  />
 	      </div> 
-	      <div id=pgButtons>
-          
-     <input type=button id="rightBackButton" class="buttonclass" onclick="goBack()" value="Go Back"/>
-     <input type="button" id="editDetails" class="buttonclass" onclick="editSub()" style="display:none;" value="Edit This Page"/>
-     <a id="backButton" href="/ibis/IBISmain.html" class="buttonclass">Back to Main Page </a>
-     
-     
-	      </div>
-
 	      
+          <?php
+          	$refernce = "";
+          	$refernce = $_SERVER['HTTP_REFERER'];
+          	if ($refernce == "http://192.168.43.132/cgi-bin/IBISnewIndexCreator.php3"){
+          	$pgButtons = '<div id=pgButtons><input type=button id="rightBackButton" class="buttonclass" onclick="goBack()" value="Go Back"/><input type="button" id="editDetails" class="buttonclass" onclick="editSub()" style="display:none;" value="Edit This Page"/>
+     <a id="backButton" href="/ibis/IBISmain.html" class="buttonclass">Back to Main Page </a>  </div>';
+          	}else {
+          		$pgButtons = '<div id=pgButtons><input type=button onclick="closeThis()" value="Dismiss"></div>';
+          	}
+          	print "$pgButtons</br>";
+          ?>
 <?php
-
-$theCat = $_POST['catVal'];
-$theSpecies = $_POST['speciesRef'];
-$theGenus = $_POST['genusRef'];
+$theCat = $_REQUEST['catVal'];
+$theID = $_REQUEST['recID'];
+$theSpecies = array_key_exists('speciesRef',$_POST)?$_POST['speciesRef']: null;
+$theGenus = array_key_exists('genusRef',$_POST)?$_POST['genusRef']: null;
 $imglistOptions = "";
 $qClose = ';';
 $picList ="";
@@ -58,12 +66,12 @@ $thespec = "";
     die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
   }
 
-	if ($theCat == "vegetables"){
+	if ($theCat == "vegetables" || $theCat == "vegetable"){
 	$prefix = "veg";
 	$theTab = "VegetablesEdits";
 	$theField = "VegetableID";
 	$thespec = "species";
-  $stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef, score  FROM Vegetables WHERE species='$theSpecies' and genus = '$theGenus'");
+  $stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef, score  FROM Vegetables WHERE VegetableID = '$theID'");
  
   $stmt3->bind_result($vegID, $phylum, $subPhylum, $class, $subClass, $Vorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $ecology, $distrib_Notes, $uses, $growing, $category, $status, $uploadDate, $mediaRefs, $contribRef, $currScore );	
   $stmt3->execute();
@@ -82,9 +90,9 @@ $thespec = "";
   $prestate = $imglistOptions.$qClose;
   $prestmt = str_replace(" or ;", ";", $prestate);
   $stmtQ = "SELECT serverpath, tags FROM Media WHERE ".$prestmt;
-  $stmt4 = $mysqli->prepare($stmtQ);
-  $stmt4->bind_result($imgpath, $imgtag);
-  $stmt4->execute();
+  $stmt4 = $mysqli->prepare($stmtQ) or die ($mysqli->error);
+  $stmt4->bind_result($imgpath, $imgtag) or die ($mysqli->error) ;
+  $stmt4->execute() or die ($mysqli->error);
   while ($stmt4->fetch()){
     $picList .= "<img class=\"imgClass\" src=\"$imgpath\" title=\"$imgtag\" />";
   }
@@ -92,7 +100,7 @@ $thespec = "";
    $picList = str_replace("$imagesfroot", "$imageshroot", $picList);
    $picList = str_replace("$imagesdroot", "$imageshroot", $picList);
    $picList = str_replace("$imagesNotebookroot","$imageshroot", $picList);
-   print " <div id=\"detail_fs\" class=\"littleDD\"><div id=\"catHeading\" class=\"cathead\"><span class=\"italC\"> $genus $species</span></div>
+   print " <div id=\"detail_fs\" class=\"littleDD\"><div id=\"catHeading\" class=\"cathead\"><span>$genus</span><span class=\"italC\">  $species</span></div>
 <div id=fqnNameList>
   <div class=\"itemC\"><label class=\"labelClass\">Phylum</label>
   <p class=\"FQNname FQNC shortText\">$phylum</p></div>
@@ -147,18 +155,18 @@ $thespec = "";
   <form name=\"editForm\" action=\"../../cgi-bin/IBISeditStuff.php3\" method=\"POST\" enctype=\"multipart/form-data\" class=\"hiddentext\">
     <input type=\"text\" name=\"thecat\" id=\"thecat\" class=\"nothiddentext\" value=\"$theCat\"/>
     <input type=\"text\" name=\"genref\" id=\"genRef\" class=\"hiddentext\" value=\"$genus\"/>
-	  <input type=\"text\" name=\"specref\" id=\"specRef\" class=\"nothiddentext\" value=\"$theSpecies\"/>
-	   <input type=\"text\" name=\"conRef\" id=\"conRef\" class=\"hiddentext\" value=\"$contribRef\"/>
-	    <input type=\"text\" name=\"recID\" id=\"recID\" class=\"hiddentext\" value=\"$vegID\"/>
+	<input type=\"text\" name=\"specref\" id=\"specRef\" class=\"nothiddentext\" value=\"$theSpecies\"/>
+    <input type=\"text\" name=\"conRef\" id=\"conRef\" class=\"hiddentext\" value=\"$contribRef\"/>
+    <input type=\"text\" name=\"recID\" id=\"recID\" class=\"hiddentext\" value=\"$vegID\"/>
  </form>
   ";
 	}
-	if ($theCat == "animals"){
+	if ($theCat == "animals" || $theCat == "animal"){
 	$prefix = "anim";
 	$theTab = "AnimalsEdits";
 	$theField = "AnimalID";
 	$thespec = "species";
-  $stmt3 = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib,  uploadDate, mediaRefs, contribRef, status, score  FROM Animals WHERE species='$theSpecies' and genus = '$theGenus'");
+	$stmt3 = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib,  uploadDate, mediaRefs, contribRef, status, score  FROM Animals WHERE AnimalID = '$theID'");
 
   $stmt3->bind_result($animID, $phylum, $subPhylum, $class, $subClass, $order, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $uploadDate, $mediaRefs, $contribRef, $status, $currScore);	
   $stmt3->execute();
@@ -177,7 +185,7 @@ $thespec = "";
   $prestmt = str_replace(" or ;", ";", $prestate);
   $stmtQ = "SELECT serverpath, tags FROM Media WHERE ".$prestmt;
   $stmt4 = $mysqli->prepare($stmtQ);
-  $stmt4->bind_result($imgpath, $imgtag);
+  $stmt4->bind_result($imgpath, $imgtag) or die ($mysqli->error);
   $stmt4->execute();
   while ($stmt4->fetch()){
     $picList .= "<img class=\"imgClass\" src=\"$imgpath\" title=\"$imgtag\"/>";
@@ -243,12 +251,12 @@ $thespec = "";
   ";
 	}
 
-	if ($theCat == "minerals"){
+	if ($theCat == "minerals" || $theCat == "mineral"){
 	$prefix = "min";
 	$theTab = "MineralsEdits";
 	$theField = "MineralID";
 	$thespec = "name";
-  $stmt3 = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses, mediaRefs,   contribRef, uploadDate, distrib, score  FROM Minerals WHERE name='$theSpecies'");
+  $stmt3 = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses, mediaRefs,   contribRef, uploadDate, distrib, score  FROM Minerals WHERE MineralID = '$theID'");
 
   $stmt3->bind_result($minID, $name, $Mgroup, $crystalSys, $habit, $chemForm, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $uses, $mediaRefs, $contribRef, $uploadDate, $distrib, $currScore);	
   $stmt3->execute();
@@ -267,23 +275,19 @@ $thespec = "";
   $prestmt = str_replace(" or ;", ";", $prestate);
   $stmtQ = "SELECT serverpath, tags FROM Media WHERE ".$prestmt;
   $stmt4 = $mysqli->prepare($stmtQ);
-  $stmt4->bind_result($imgpath, $imgtag);
+  $stmt4->bind_result($imgpath, $imgtag) or die ($mysqli->error);
   $stmt4->execute();
   while ($stmt4->fetch()){
     $picList .= "<img class=\"imgClass\" src=\"$imgpath\" title=\"$imgtag\" />";
   }
-   	 
    $picList = str_replace("$imagesfroot", "$imageshroot", $picList);
    $picList = str_replace("$imagesdroot", "$imageshroot", $picList);
-      $picList = str_replace("$imagesNotebookroot","$imageshroot", $picList);
-   //$emptyreg = "/w/";
+   $picList = str_replace("$imagesNotebookroot","$imageshroot", $picList);
    $chemFormArray = str_split("$chemForm");
    $chemForm = "";
    foreach ($chemFormArray as $chemChar){
     if (intVal($chemChar)){
-    
       $chemChar = '<sub>'.$chemChar.'</sub>';
-       //  print " $chemChar: \n";
     }
     $chemForm .= "$chemChar"; 
    }
@@ -327,38 +331,33 @@ $thespec = "";
   <div id=\"oDDOutput\" class=\"OutputMin\"></div>
   <div id=\"imgGrid\">$picList</div>
   <form name=\"editForm\" action=\"../../cgi-bin/IBISeditStuff.php3\" method=\"POST\" enctype=\"multipart/form-data\" class=\"hiddentext\">
-    <input type=\"text\" name=\"thecat\" id=\"thecat\" class=\"hiddentext\" value=\"$theCat\"/>
+      <input type=\"text\" name=\"thecat\" id=\"thecat\" class=\"hiddentext\" value=\"$theCat\"/>
 	  <input type=\"text\" name=\"specref\" id=\"specRef\" class=\"hiddentext\" value=\"$theSpecies\"/>
-	  
 	  <input type=\"text\" name=\"conRef\" id=\"conRef\" class=\"hiddentext\" value=\"$contribRef\"/>
 	  <input type=\"text\" name=\"recID\" id=\"recID\" class=\"hiddentext\" value=\"$minID\"/>
-	  
  </form>
   ";
 	}
 	include ("IBISviews.php3");
 	if ($currScore == ""){
-	$currScore = "0";
-	
+		$currScore = "0";
 	}
 ?>
-
 </div>
 <form name="detailInfoForm" action="../../cgi-bin/IBISnewIndexCreator.php3" method="POST" enctype="multipart/form-data" class="hiddentext">
-	        <input type=text id="catVal" name="catValue" class="" value=
-	        <?php $htmlheading = ($_POST['catVal']);
-	        echo "$htmlheading"; 
-	        ?>
-	        >
-	     </form>
+	<input type=text id="catVal" name="catValue" class="" value=
+    <?php $htmlheading = ($_POST['catVal']);
+	    echo "$htmlheading"; 
+    ?>
+    />
+</form>
 <script>
-function goBack(){
-  document.detailInfoForm.submit();
-}
- function editSub(){
- document.editForm.submit();
- }
-
+	function goBack(){
+	  document.detailInfoForm.submit();
+	}
+	function editSub(){
+	 document.editForm.submit();
+	}
 </script>
 <?php
 print "<div id=viewsBlock><label>Viewed <span id=Vcount>$viewC</span> Times</label><br><label>Edited <span id=Ecount>$edCount</span> Times </label></br><label>Current Score </br><span id=\"currScore\">$currScore</span></label></div><div id=\"ratingsBlock\">
@@ -411,20 +410,21 @@ print "<div id=viewsBlock><label>Viewed <span id=Vcount>$viewC</span> Times</lab
 			value=\"-5\"
 		/>wrong information
 		</p>
-		
-	</legend><div id=\"rButtons\">
-	<input type=\"button\" onclick=\"submitVote()\" class=\"button\" value=\"Submit\">
-	<input type=\"button\" onclick=\"cancelVote()\" class=\"button\" value=\"Cancel\">
+	</legend>
+	<div id=\"rButtons\">
+		<input type=\"button\" onclick=\"submitVote()\" class=\"button\" value=\"Submit\">
+		<input type=\"button\" onclick=\"cancelVote()\" class=\"button\" value=\"Cancel\">
 	</div>
-</div><div id=\"showRates\">
-	<span id=\"ratebutton\"><input type=\"button\" id=\"ratebut\" class=\"button\" value=\"Rate this page\" onclick=\"showRating()\"></span><span id=\"rtecmnt\">not sent</span>
+</div>
+<div id=\"showRates\">
+	<span id=\"ratebutton\"><input type=\"button\" id=\"ratebut\" class=\"button\" value=\"Rate this page\" onclick=\"showRating()\"></span><span id=\"rtecmnt\">not sent
+	</span>
 </div>
 	<div id=\"commentBlock\" display=\"none\">
 		<label>You have given this page a low score, You can...</label></br>
 		<a href=\"http://192.168.43.132/ibis/IBISregistration.html\" class=\"littleDD linksclass\">Register as a contributer and edit it</a> </br>
 		<input type=\"button\" class=\"button\" value=\"Dismiss\" onclick=\"dismissNote()\"/>
 	</div>
-	
 	<span id=\"rateSent\"><input type=\"text\" id=\"rateIsSent\" value=\"no\"/><input type=\"input\" id=\"rcID\" value=\"\" style=\"display:none;\"/></span>";
 ?>
 </body>

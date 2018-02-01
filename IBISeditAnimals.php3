@@ -1,16 +1,12 @@
 <?php
-// connect to database
 	include ("IBISvars.inc");
 	if (!$guest_acc){
 	$IBISerror = "the include file was not included <br>";
-	//	print "the include file was not included <br>";
 	}
 	$mysqli = new mysqli('localhost', "$contrib_acc", "$contrib_pass", 'IBIS');
   	if ($mysqli->connect_error){
    		die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
   	}
-	//$MainBackButton = '<div id="pgButtons" class="littleDD"><a href="/ibis/IBISmain.html" class="buttonclass littleDD">Back to Main Screen</a></div>';
-	//print "$MainBackButton <br>";
 	$fileMessg =""; 
 	$fileError ="";
 	$dataMessg ="";
@@ -19,15 +15,14 @@
 	if ($_POST['kingdom'] == "Animalia"){
 		$prefix = "anim";
 		include ("IBISeditFunctions.php3");
-	//$thisspecies = trim(array_key_exists('species',$_POST)?$_POST['species']:null);
-	$thisAID= trim(array_key_exists('AnimalID',$_POST)?$_POST['AnimalID']:null);
-	$stmt3a = "INSERT INTO AnimalsEdits (AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef, editComnt, origDate )
+		$thisAID= trim(array_key_exists('AnimalID',$_POST)?$_POST['AnimalID']:null);
+		$stmt3a = "INSERT INTO AnimalsEdits (AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef, editComnt, origDate )
 	 select AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef, editComnt, origDate from Animals where AnimalID='$thisAID';";
-	$st3aResult = $mysqli->query($stmt3a) or die ("could not copy to Edits table". $mysqli->error);
-	$stmt3b = ("delete from Animals where AnimalID='$thisAID'");
-	$st3bResult = $mysqli->query($stmt3b) or die ("could not  delete from Data table".$mysqli->error);
-  $dataMessg = "Data received....processing will follow <br>";
-	$stmt3 = $mysqli->prepare("INSERT INTO Animals (AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef,editComnt, origDate ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or die ("could not prepare statement 3 <br>");
+		$st3aResult = $mysqli->query($stmt3a) or die ("could not copy to Edits table". $mysqli->error);
+		$stmt3b = ("delete from Animals where AnimalID='$thisAID'");
+		$st3bResult = $mysqli->query($stmt3b) or die ("could not  delete from Data table".$mysqli->error);
+  		$dataMessg = "Data received....processing will follow <br>";
+		$stmt3 = $mysqli->prepare("INSERT INTO Animals (AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef,editComnt, origDate ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or die ("could not prepare statement 3 <br>");
 	$stmt3->bind_param('sssssssssssssssssssssssss', $AnimalID, $phylum, $subPhylum, $class, $subClass, $order, $suborder, $family, $subfamily, $genus, $subgenus, $species, $subspecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $status, $uploadDate, $mediaRefs,  $contributer_ID, $editComnt, $origDate );
 	$AnimalID = trim(array_key_exists('AnimalID',$_POST)?$_POST['AnimalID']:null); 
 	$phylum = trim(array_key_exists('phylum',$_POST)?$_POST['phylum']:null); 
@@ -60,9 +55,6 @@
 	$editComnt = trim(array_key_exists('editComnt',$_POST)?$_POST['editComnt']:null);
 	$stmt3->execute();
 	if ($stmt3->affected_rows == -1){
-// this means the transaction could nt be completed and I should put something 
-// to deal with that condition.	
-// (expr) ? ValueIfTrue : ValueIfFalse ;
 
 	}
 	$stmt3->close();		
@@ -109,7 +101,5 @@ $htmlHead = '<!DOCTYPE html>
 	        <a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD"><img src="" alt="">Back to Main Screen</a>
         </div>
         <div id="detail_fs_min" class="littleDD" ></div>';
-       
 print "$htmlHead";
- 
 ?>

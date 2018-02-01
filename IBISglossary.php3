@@ -6,6 +6,7 @@ if (!$guest_acc){
 $itemN = 0;
 $numFile = 0;
 $prefix = "gls";
+$table = "";
 $uploadDate = date('Y-m-d H:i:s');
 $mysqli = new mysqli('localhost', "$contrib_acc", "$contrib_pass", 'IBIS');
 if ($mysqli->connect_error){
@@ -17,60 +18,64 @@ if ($stmt->execute()){
   $stmt->fetch();
   $stmt->close();
 }
-
-	if ($_POST){
-	
-		$entryCount = $_POST['ICVal'];
-		for ($i = 1; $i <= $entryCount; $i++){
-		$itemN++;
-			$item = "item".$i;
-			$def = "definition".$i;
-			$diagC = "diagramCap".$i;
-			$picRef = "picref" . $i;
-			$thisDef = $_POST["$def"];
-			$thisItem = $_POST["$item"];
-			$thisdiagC = $_POST["$diagC"];
-			$thisPicRef = $_POST["$picRef"];
-			if (!$thisPicRef == ""){
-			$imageRef = getImageRef($thisPicRef);
-			}
-			else{
-				$imageRef = "no image";
-			}
-			if ($thisdiagC == ""){
-				$thisdiagC = "empty caption";
-			}
-			if ($thisDef == ""){
-				$thisDef = "empty definition";
-			}
-			if ($thisItem == ""){
-				$thisItem = "empty term";
-			}
-			
-			
-			$stmnt1 = $mysqli->prepare("INSERT into vegGlossary(GlossID, item, definition, diagramref, uploadDate) VALUES (?,?,?,?,?)");
-			$stmnt1->bind_param('sssss',$theID,$theItem,$theDef,$theDGref, $uploadDate );
-			$theID = 0;
-			$theItem = $thisItem;
-			$theDef = $thisDef;
-			$theDGref = $imageRef;
-			$uploadDate = $uploadDate;
-			$stmnt1->execute();
-		}
-	}else{
-		print "files array not found";
+if ($_POST){
+	$Maintable = $_POST['category'];
+	if($Maintable == "Animals"){
+		$table = "animGlossary";
 	}
-	
-	
-	function getImageRef($Ref){
+	if($Maintable == "Minerals"){
+		$table = "minGlossary";
+	}
+	if($Maintable == "Vegetables"){
+		$table = "vegGlossary";
+	}
+	$entryCount = $_POST['ICVal'];
+	for ($i = 1; $i <= $entryCount; $i++){
+		$itemN++;
+		$item = "item".$i;
+		$def = "definition".$i;
+		$diagC = "diagramCap".$i;
+		$picRef = "picref" . $i;
+		$thisDef = $_POST["$def"];
+		$thisItem = $_POST["$item"];
+		$thisdiagC = $_POST["$diagC"];
+		$thisPicRef = $_POST["$picRef"];
+		if (!$thisPicRef == ""){
+			$imageRef = getImageRef($thisPicRef);
+		}
+		else{
+			$imageRef = "no image";
+		}
+		if ($thisdiagC == ""){
+			$thisdiagC = "empty caption";
+		}
+		if ($thisDef == ""){
+			$thisDef = "empty definition";
+		}
+		if ($thisItem == ""){
+			$thisItem = "empty term";
+		}
+	$stmnt1 = $mysqli->prepare("INSERT INTO $table (glossID, item, definition, uploadDate, diagramref) VALUES (?,?,?,?,?)") or die ($mysqli->error);
+	$stmnt1->bind_param('sssss',$theGloss, $theItem,$theDef,$uploadDate, $theDGref )or die ($mysqli->error);
+	$theGloss = 0;
+	$theItem = $thisItem;
+	$theDef = $thisDef;
+	$theDGref = $imageRef;
+	$uploadDate = $uploadDate;
+	$stmnt1->execute()or die ($mysqli->error);
+	}
+}else{
+	print "files array not found";
+}
+
+function getImageRef($Ref){
 	global $prefix, $uploaddir, $numFile, $mysqli, $uploadDate;
-	
 	$ufC = count($_FILES);
 	$a=$ufC;
-  for ($j=1; $j<=$ufC; $j++){
-  $picName = "pictures" . $j;
+	for ($j=1; $j<=$ufC; $j++){
+  		$picName = "pictures" . $j;
 		if ($_FILES["$picName"]['name'] == $Ref){
-		$numFile++;
+			$numFile++;
 			$oldFname=$_FILES["$picName"]['name'];
 			$extn = substr($oldFname, -4);
 			$newfileN = "$uploaddir"."$prefix"."$numFile"."$extn";
@@ -81,33 +86,31 @@ if ($stmt->execute()){
 			if(move_uploaded_file("$tempF","$newfileN")){
 				exec("/usr/bin/convert -resize 400x300! $newfileN $newfileN");
 				$stmt2 = $mysqli->prepare("INSERT INTO Media ( MediaID, type, filename, tags, uploadDate, contribRef, uploaderType, serverpath ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )"); // write the new media file to the Media table
-      	$stmt2->bind_param('ssssssss', $MediaID, $Type, $filename, $tags, $uploadDate, $contribRef, $uploaderType, $servPath) or die ("cannot bind parameters.");
-      	$typea = "";
-      	if ($extn == "jpg" || $extn == "png" || $extn == "gif"){
-      		$typea = "image";
-      	}
-      	$MediaID = 0;
-      	$Type = $extn;
-      	$filename = $newName;
-      	$tags = $caption; //***This need to be evaluated....done
-     	$uploadDate = $uploadDate;
-     	$contribRef = trim($_POST['contributer_ID']);
-      	$uploaderType = "c";
-      	$servPath = $newfileN;
-      	$stmt2->execute();
+      			$stmt2->bind_param('ssssssss', $MediaID, $Type, $filename, $tags, $uploadDate, $contribRef, $uploaderType, $servPath) or die ("cannot bind parameters.");
+      			$typea = "";
+      			if ($extn == "jpg" || $extn == "png" || $extn == "gif"){
+      				$typea = "image";
+      			}
+			  	$MediaID = 0;
+			  	$Type = $extn;
+			  	$filename = $newName;
+			  	$tags = $caption; //***This need to be evaluated....done
+			 	$uploadDate = $uploadDate;
+			 	$contribRef = trim($_POST['contributer_ID']);
+			  	$uploaderType = "c";
+			  	$servPath = $newfileN;
+			  	$stmt2->execute();
 			}
-			
 			$a = "$newName";
 		}
 	}
-			return $a;
-	}
+	return $a;
+}
 	$htmlR = '<!doctype html>
-	<head>
-	<script type="text/javascript">
-	document.location = "/ibis/IBISvegGlossaryEntry.html";
-	</script>
-	</head><body></body></html>	
-	';
+		<head>
+			<script type="text/javascript">
+				document.location = "/ibis/IBISvegGlossaryEntry.php3";
+			</script>
+		</head><body></body></html>';
 	print "$htmlR";
 ?>

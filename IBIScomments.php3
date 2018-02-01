@@ -1,9 +1,4 @@
 <?php
-/*
-this script receives comments from the getDetails page
-along with the contribRef and the recordID
-this data is then written to the las editors profile record
-*/
 $contRef = $_POST['name1'];
 $commnt = $_POST['name2'];
 $recID = $_POST['name3'];
