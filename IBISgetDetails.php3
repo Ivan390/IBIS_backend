@@ -10,7 +10,7 @@
 
       <link rel="stylesheet"
         type="text/css"
-        href="http://192.168.43.132/ibis/IBIS_maincss.css"
+        href="http://192.168.43.132/ibis/Bdetails.css"
       />
 <link rel="stylesheet" type="text/css" media="only screen and (max-width: 500px)" href="http://192.168.43.132/ibis/smallerDevice.css" />       
 	<script type=text/javascript>
@@ -29,13 +29,14 @@
 	      <div id="logo_image_holder">
 	        <img id="logo_image" src="/ibis/images/Logo1_fullsizetransp.png"  />
 	      </div> 
+	      <div id="pgHeading">Details</div>
 	      
           <?php
           	$refernce = "";
           	$refernce = $_SERVER['HTTP_REFERER'];
           	if ($refernce == "http://192.168.43.132/cgi-bin/IBISnewIndexCreator.php3"){
-          	$pgButtons = '<div id=pgButtons><input type=button id="rightBackButton" class="buttonclass" onclick="goBack()" value="Go Back"/><input type="button" id="editDetails" class="buttonclass" onclick="editSub()" style="display:none;" value="Edit This Page"/>
-     <a id="backButton" href="/ibis/IBISmain.html" class="buttonclass">Back to Main Page </a>  </div>';
+          	$pgButtons = '<div id=pgButtons><input type=button id="rightBackButton" class="linkC" onclick="goBack()" value="Go Back"/><input type="button" id="editDetails" class="linkC" onclick="editSub()" style="display:none;" value="Edit This"/>
+     <a id="backButton" href="/ibis/IBISmain.html" class="linkC">Back to Main </a>  </div>';
           	}else {
           		$pgButtons = '<div id=pgButtons><input type=button onclick="closeThis()" value="Dismiss"></div>';
           	}

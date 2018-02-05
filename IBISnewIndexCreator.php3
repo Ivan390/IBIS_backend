@@ -9,7 +9,7 @@
 	<script type="text/javascript" src="http://192.168.43.132/ibis/dateshorts.js"></script>
 	<link rel="stylesheet"
         type="text/css"
-        href="http://192.168.43.132/ibis/IBIS_maincss.css"
+        href="http://192.168.43.132/ibis/Bindex.css"
       /> 
 	<link rel="stylesheet" type="text/css" media="only screen and (max-width: 500px)" href="http://192.168.43.132/ibis/smallerDevice.css" /> 
   </head> 
@@ -23,8 +23,8 @@
 	        <img id="logo_image" src="/ibis/images/Logo1_fullsizetransp.png"  />
 	      </div> 
 	      <div id=pgButtons>
-			<a id="backButton" href="/ibis/IBISmain.html" class="buttonclass">Back to Main Page </a>
-			<input type="button" id="getDetails" class="buttonclass hiddentext" onclick="getDetails()" value="Get More Details" />
+			<a id="backButton" href="/ibis/IBISmain.html" class="linkC">Back to Main</a>
+			<input type="button" id="getDetails" class="linkC hiddentext" onclick="getDetails()" value="Get More Details" />
 	      </div>
 	      <div id="catHeading" class="cathead">
 	        <?php

@@ -6,6 +6,7 @@ $theCat = array_key_exists('thecat',$_REQUEST)?$_REQUEST['thecat']: null; // pos
 $theSpecies = array_key_exists('specref',$_REQUEST)?$_REQUEST['specref']: null; // post variable from IBISgetDetails.php3
 $theGenus = array_key_exists('genref',$_REQUEST)?$_REQUEST['genref']: null; 
 $imglistOptions = ""; // list that holds the mediarefs for the database query that returns the serverpath and tags
+$recID = $_POST['recID'];
 $qClose = ';';
 $picList ="";
 $theHeading = ucfirst($theCat);
@@ -22,7 +23,7 @@ function makePicList($mediaRefers){ // function that processes the mediaRefs ret
   		}
 		$imglistOptions .= "filename='$mediaRef' or "; // construct the query's WHERE clause ...
 	} 
-	print "$imglistOptions</br>";
+
   	$prestate = $imglistOptions.$qClose; // ...
   	$prestmt = str_replace(" or ;", ";", $prestate); // ...>
   	$stmtQ = "SELECT serverpath, tags FROM Media WHERE $prestmt"; // construct database query 
@@ -49,7 +50,8 @@ include ("IBISvars.inc");
   	}
 	if ($theCat == "vegetables"){ // Vegetables editing process for getting existing dataset
 		$styleSheet = $vegcss;
-  		$stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef  FROM Vegetables WHERE species='$theSpecies' and genus = '$theGenus'")or die("cannot prepare select statement");
+		$RECID = "VegetableID";
+  		$stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef  FROM Vegetables WHERE $RECID = $recID")or die("cannot prepare select statement");
   		$stmt3->bind_result($VegetableID, $phylum, $subPhylum, $class, $subClass, $Vorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $ecology, $distrib_Notes, $uses, $growing, $category, $status, $uploadDate, $mediaRefs, $contribRef)or die("cannot bind dataset result");	
   		$stmt3->execute();
   		$stmt3->fetch();
@@ -130,7 +132,8 @@ include ("IBISvars.inc");
 }
 if ($theCat == "animals"){  // Animals editing process for getting existing dataset
 	$styleSheet = $animcss;
-if (!$stmtAnim = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef  FROM Animals WHERE species='$theSpecies' and genus = '$theGenus'")){
+	$RECID = "AnimalID";
+if (!$stmtAnim = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef  FROM Animals WHERE $RECID = $recID")){
   	print $mysqli->error;
 }
 $stmtAnim->bind_result($AnimalID,$phylum, $subPhylum, $class, $subClass, $Aorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $status, $uploadDate, $mediaRefs, $contribRef) or die ("could not bind result");	
@@ -210,7 +213,8 @@ $FormOutput = '
 }		
 if ($theCat == "minerals"){ // call function to resolve mediaRefs to filepaths
 	$styleSheet = $mincss;
-	$stmtAnim = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses,  mediaRefs, contribRef, uploadDate, distrib  FROM Minerals WHERE name='$theSpecies'") or die($mysqli->error);
+	$RECID = "MineralID";
+	$stmtAnim = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses,  mediaRefs, contribRef, uploadDate, distrib  FROM Minerals WHERE $RECID = $recID") or die($mysqli->error);
 	  $stmtAnim->bind_result($MineralID, $name, $Mgroup, $crystalSys, $habit, $chemForm, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $uses, $mediaRefs, $contribRef, $uploadDate, $distribution ) or die ("could not bind stuff ".$mysqli->error);	
 	  $stmtAnim->execute();
 	  $stmtAnim->fetch();

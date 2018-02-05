@@ -114,7 +114,7 @@ include ("IBISvars.inc");
         <img id="logo_image" src="http://192.168.43.132/ibis/images/Logo1_fullsizetransp.png" />
       </div><div id="retHeading">Image Match Result</div>
       <div id="subContainer"><input type="text" value="'.$tagstring.'" style="display:none" id="catval">';
-	$htmlF = '<div id="listDiv"></div><input type="button" class="buttonclass" onclick="closeThis()" value="Dismiss"/></div></div></body></html>';
+	$htmlF = '<div id="listDiv"></div><span class="linkC" onclick="closeThis()" >Dismiss</span></div></div></body></html>';
 	print "$htmlH $origF $imgDiv $htmlF ";
 /*	
 AE
