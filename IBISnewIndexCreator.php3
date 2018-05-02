@@ -11,7 +11,7 @@
         type="text/css"
         href="http://192.168.43.132/ibis/Bindex.css"
       /> 
-	<link rel="stylesheet" type="text/css" media="only screen and (max-width: 500px)" href="http://192.168.43.132/ibis/smallerDevice.css" /> 
+	<link rel="stylesheet" type="text/css" media="only screen and (max-width: 500px)" href="http://192.168.43.132/ibis/Sindex.css" /> 
   </head> 
     <body onload=initForm() style="width:100vw">
       <div id="SFallContainer" class="ac">
@@ -24,7 +24,7 @@
 	      </div> 
 	      <div id=pgButtons>
 			<a id="backButton" href="/ibis/IBISmain.html" class="linkC">Back to Main</a>
-			<input type="button" id="getDetails" class="linkC hiddentext" onclick="getDetails()" value="Get More Details" />
+			
 	      </div>
 	      <div id="catHeading" class="cathead">
 	        <?php
@@ -44,15 +44,17 @@
 	        />
           </form>
 	      <div id=subContain >
+	      <div id="hitCnt"></div>
 	       <div id="theCategory">
 	        <div id="theCategoryHeading"></div>
+	        
 	        <div id="catPicsList" class="catCont" > </div>
 	        <div id="picTag" class="imgtag" ></div>
 	      </div>
 	      <div id=findOptions class="littleDD">
 	      	<span id="DDLOption" ></span>
-	        <select id="DDL2" class="selectList" ></select></br>
-	        <span id="DDL3Option"></span>
+	        <select id="DDL2" class="selectList hiddentext" value=""></select></br>
+	        <span id="DDL3Option" onclick="clHits()"></span>
 	        <span id="buttContSpan" >
 	         	<span id="op2btSpan" onClick="getSelectInfo()"> 
 	         		<input type="button" id="option2btn" class="buttonclass" onClick="getSelectInfo()" value="Selection">
@@ -63,7 +65,7 @@
 	        </span>
 	      </div>
 	     <div id=infoSet class=infoset></div>
-	     <div id="GBlock"><span id="Ghead">Glossary</span>
+	     <div id="GBlock"><span id="Ghead" onclick="showAlpha()" >Glossary</span>
 	      	<p class="Gselect" onclick="readGloss(this)">A</p>
 			<p class="Gselect" onclick="readGloss(this)">B</p>
 			<p class="Gselect" onclick="readGloss(this)">C</p>
@@ -144,8 +146,10 @@ function populateDDL2(){
 	          }
 	        }
         	$("#DDL2").html(theretval);
+        	$("#hitCnt").html("");
         	$("#infoSet").html("");
         	$("#specipicH").html("");
+        	$('#DDL2').show();
         }
      }
     });
@@ -177,6 +181,8 @@ function getSelectInfo(){
 	      var valueList = "";
 	      var theSet = "";
 	      var thedata = data.split(";");
+	      var rc = thedata.length - 1;
+	      var retCnt = "<p>" + rc + " hits </p>";
 	      for (b = 0; b < thedata.length; b++){
 	        if (!thedata[b] == ""){
 	          valueList = thedata[b].split(":");
@@ -189,6 +195,7 @@ function getSelectInfo(){
 	          theSet += "<span class=\"linksclass\"><img src=" + valueList[0] + " title=" + binomial + " onClick=showSummarry(this)></span>"; 
 	          }
 	        }
+	        $("#hitCnt").html(retCnt);
 	        $("#catPicsList").html(theSet); 
 	        $("#infoSet").html("");
 	      } 
@@ -216,7 +223,7 @@ function showSummarry(that){
        // animals::Aonyx:capensis:Cape ClawlessOtter:animals::Pternistes:capensis:CapeFrancolin:
 	      thedata2 = data.split(":");
 	     if (thedata2[0] == "vegetables"|| thedata2[0] == "animals"){
-	       valueList2 = "<div id=speciePic><img src=\"" + picsrc + "\" title=\"" +thedata2[2]+ " :  "+thedata2[3]+ "\" width=\"200px\" height=\"200px\" /></div><div id=sumDetails class=\"\"><span class=\"headingC\">Family</span><br><span class=\"detailC\">" + thedata2[1] + "</span><br><span class=\"headingC\">Genus</span><br><span class=\"detailC\">" + thedata2[2] + "</span><br><span class=\"headingC\">Species</span><br><span class=\"detailC\">" + thedata2[3] + "</span><br> <span class=\"headingC\">Local Names</span><br><span class=\"detailC localN\">" + thedata2[4] + "</span><br><input type=\"button\" value=\"Dismiss\" onclick=\"closeThis()\" class=\"buttonclass\" id=\"closeInfo\"></div>";
+	       valueList2 = "<div id=speciePic><img src=\"" + picsrc + "\" title=\"" +thedata2[2]+ " :  "+thedata2[3]+ "\" width=\"200px\" height=\"200px\" /></div><div id=sumDetails class=\"\"><span class=\"headingC\">Family</span><br><span class=\"detailC\">" + thedata2[1] + "</span><br><span class=\"headingC\">Genus</span><br><span class=\"detailC\">" + thedata2[2] + "</span><br><span class=\"headingC\">Species</span><br><span class=\"detailC\">" + thedata2[3] + "</span><br> <span class=\"headingC\">Local Names</span><br><span class=\"detailC localN\">" + thedata2[4] + "</span><br><input type=\"button\" value=\"Dismiss\" onclick=\"closeThis()\" class=\"buttonclass\" id=\"closeInfo\"><input type=\"button\" id=\"getDetails\" class=\"buttonclass\" onclick=\"getDetails()\" value=\"More...\" /></div>";
      // valueList3 = "";
    	        $("#speciesRef").val(thedata2[3]);
    	        $("#genusRef").val(thedata2[2]);
@@ -233,7 +240,7 @@ function showSummarry(that){
 	      		}
 	      		chemForm += chemArray[j];
 	     	}
-	     valueList2 = "<div id=speciePic><img src=\"" + picsrc + "\" title=\"" +thedata2[2]+ " :  "+thedata2[3]+ "\" width=\"200px\" height=\"200px\" /></div><div id=sumDetails class=\"\"><span class=\"headingC\">Name</span><br><span class=\"detailC\">" + thedata2[1] + "</span><br><span class=\"headingC\">Group</span><br><span class=\"detailC\">" + thedata2[2] + "</span><br><span class=\"headingC\">Crystal System</span><br><span class=\"detailC\">" + thedata2[3] + "</span><br><span class=\"headingC\">Chemical Formula</span><br><span class=\"detailC\">" + chemForm + "</span><br><input type=\"button\" value=\"Dismiss\" onclick=\"closeThis()\" class=\"buttonclass\" id=\"closeInfo\"></div>";
+	     valueList2 = "<div id=speciePic><img src=\"" + picsrc + "\" title=\"" +thedata2[2]+ " :  "+thedata2[3]+ "\" width=\"200px\" height=\"200px\" /></div><div id=sumDetails class=\"\"><span class=\"headingC\">Name</span><br><span class=\"detailC\">" + thedata2[1] + "</span><br><span class=\"headingC\">Group</span><br><span class=\"detailC\">" + thedata2[2] + "</span><br><span class=\"headingC\">Crystal System</span><br><span class=\"detailC\">" + thedata2[3] + "</span><br><span class=\"headingC\">Chemical Formula</span><br><span class=\"detailC\">" + chemForm + "</span><br><input type=\"button\" value=\"Dismiss\" onclick=\"closeThis()\" class=\"buttonclass\" id=\"closeInfo\"><input type=\"button\" id=\"getDetails\" class=\"buttonclass\" onclick=\"getDetails()\" value=\"More...\" /></div>";
 	    $("#speciesRef").val(thedata2[1]);
      }
      $("#infoSet").html(valueList2); 
@@ -278,6 +285,9 @@ function getkeyword(){
 	      var valueList = "";
 	      var theSet = "";
 	      var thedata = data.split("::");
+	      var rc = thedata.length -1;
+	      var retCnt = "<p>" +rc+ " hits </p>";
+	      
 	      for (b = 0; b < thedata.length; b++){
 	        if (!thedata[b] == ""){
 	          valueList = thedata[b].split(":");
@@ -291,12 +301,19 @@ function getkeyword(){
 	          }
 	        }
 	      } 
+	      $("#hitCnt").html(retCnt);
 	      $("#catPicsList").html(theSet); 
 	      $("#infoSet").html("");
 	      $("#specipicH").html(""); 
     	 }
       });
-	}				
+	}		
+	function clHits() {
+		$("#hitCnt").html("");
+		$("#DDL2").hide();
+	
+	}
+	
     </script>
     </body>
 </html>   

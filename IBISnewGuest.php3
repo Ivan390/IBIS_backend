@@ -35,8 +35,8 @@
      			<img id="logo_image" src="/ibis/images/Logo1_fullsizetransp.png"  />
    			</div>
    			<div id=pgButtons>
-     			<a id="backButton" href="/ibis/IBISmain.html" class="buttonclass littleDD">Back to Main Page </a>
-     			<input id="submitButton" type="button" onclick="submitThis()" class="buttonclass littleDD" value="Submit"/>
+     			<a id="backButton" href="/ibis/IBISmain.html" class="linkC">Back to Main </a>
+     			<input id="submitButton" type="button" onclick="submitThis()" class="linkC" value="Submit"/>
     		</div> 
   			<div id="gTitle">Guest Book</div>
   			<div id="detailcont">

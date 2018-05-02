@@ -219,7 +219,6 @@ if ($theCat == "minerals"){ // call function to resolve mediaRefs to filepaths
 	  $stmtAnim->execute();
 	  $stmtAnim->fetch();
 	  $stmtAnim->close();
-	  print "$crystalSys</br>";
 		$picList = makePicList($mediaRefs); // call function to resolve mediaRefs to filepaths
 		$FormOutput = '
 <form  name="EditsForm" action="../../cgi-bin/IBISeditMinerals.php3" method="POST" enctype="multipart/form-data" class="">
@@ -334,8 +333,8 @@ $htmlHead = '<!DOCTYPE html>
          <p id="headingText">'.$theHeading.' Editing  Form</p>
         </div>
         <div id="pgButtons" class="littleDD">
-	       	<input type="button" value="Submit Data" class="buttonclass littleDD" onclick="doEdSubmit()">   
-	        <a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD"><img src="" alt="">Back to Main Screen</a>
+	       	<input type="button" value="Submit Data" class="linkC" onclick="doEdSubmit()"> 
+	       	<a href="http://192.168.43.132/ibis/IBISmain.html" class="linkC">Back to Main</a>
         </div>
         <div id="detail_fs_min" class="littleDD" >';
 $htmlClose = '</body></html>';	 			

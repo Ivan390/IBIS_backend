@@ -100,7 +100,7 @@ $htmlH = '<!DOCTYPE html>
    		href="http://192.168.43.132/ibis/smallerDevice.css" />
  	</head>
  	<body><input type="text" value="'.$tagstring.'" style="display:none" id="catval">';
-	$htmlF = '<div id="listDiv"></div><input type="button" class="buttonclass" onclick="closeThis()" value="Dismiss"/></body></html>';
+	$htmlF = '<div id="listDiv"></div><input type="button" class="linkC" onclick="closeThis()" value="Dismiss"/></body></html>';
 print "$htmlH \n$origF  $listDiv $imgDiv \n$htmlF ";
 /*	
 AE

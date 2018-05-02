@@ -33,8 +33,8 @@
   		if ($mysqli2->connect_error){
    			die('Connect Error ('. $mysqli2->connect_errno . ')' .$mysqli2->connect_error);
  		}
-		$logcheck = $mysqli2->prepare("Select max(LoginID), max(inDate), max(outDate) from Login where contribRef = '$Uname'");
-		$logcheck->bind_result($logID, $Lindate, $LoutDate);
+		$logcheck = $mysqli2->prepare("Select max(LoginID), max(inDate), max(outDate) from Login where contribRef = '$Uname'") or die ($mysqli2->error);
+		$logcheck->bind_result($logID, $Lindate, $LoutDate) or die ($mysqli2->error);
 		$logcheck->fetch();
 		$logcheck->close();
         if (!$logID ){

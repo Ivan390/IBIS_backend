@@ -18,11 +18,12 @@
 	if ($table == "animals"){
 	 $table = "animGlossary";
 	}
-	$stmnt1 = $mysqli->prepare("SELECT item, definition from $table where item like '$theName%' ") or die ($mysqli->error);
+	$stmnt1 = $mysqli->prepare("SELECT distinct item, definition from $table where item like '$theName%' ") or die ($mysqli->error);
 	$stmnt1->bind_result($item,$defin) or die ($mysqli->error);
 	$stmnt1->execute() or die ($mysqli->error);
 	while ($stmnt1->fetch()){
 	 $define = trim($defin);
+	 $define = str_replace("?", " ", $define);
 		$entriesL .= "$item:*$define@|";
 	}
 	$stmnt1->close();

@@ -40,36 +40,23 @@ if ($mysqli->connect_error){
 	die('Connect Error ('.$mysqli->connect_errno.')' .$mysqli->connect_error);
 }
 
-$stmnt1 = $mysqli->prepare("select name, lastname, userName, Media.serverpath,regDate, email from Contributers, Media where Contributers.ContribID = \"$userName\" and Contributers.mediaRef = Media.filename") or die ("could not prepare statement " . $mysqli->error);
+$stmnt1 = $mysqli->prepare("select name, lastname, userName, Media.serverpath, regDate, email from Contributers, Media where Contributers.ContribID = \"$userName\" and Contributers.mediaRef = Media.filename") or die ("could not prepare statement " . $mysqli->error);
 $stmnt1->bind_result($fName, $lName, $username, $mediapath, $regDate, $emailA );     
 $stmnt1->execute();
 $stmnt1->fetch() ;
 $stmnt1->close();
-$stmnt2 = $mysqli->prepare("select sum(score) from Vegetables where contribRef = \"$userName\"");
-$stmnt2->bind_result($vegSum);
+$Qtotal = 0;
+#$stmnt2 = $mysqli->prepare("select sum(score) from Vegetables where contribRef = \"$userName\"");
+$stmnt2 = $mysqli->prepare("select sum(Vegetables.score) from Vegetables where contribRef = \"$userName\" union select sum(Animals.score)  from Animals where contribRef = \"$userName\" union select sum(Minerals.score) from Minerals where contribRef = \"$userName\"") or die ("could not prepare statement " . $mysqli->error); 
+#select sum(Animals.score) from Animals where contribRef = \"$userName\" select sum(Minerals.score) from Minerals where contribRef = \"$userName\"" ) ;
+$stmnt2->bind_result($Qresult);
 $stmnt2->execute();
-$stmnt2->fetch();
+while ($stmnt2->fetch()){
+	$Qtotal = $Qtotal + $Qresult;
+}
 $stmnt2->close();
-if (!$vegSum){
-	$vegSum = 0;
-}
-$stmnt3 = $mysqli->prepare("select sum(score) from Animals where contribRef = \"$userName\"");
-$stmnt3->bind_result($animSum);
-$stmnt3->execute();
-$stmnt3->fetch();
-$stmnt3->close();
-if (!$animSum){
-	$animSum = 0;
-}
-$stmnt4 = $mysqli->prepare("select sum(score) from Minerals where contribRef = \"$userName\"");
-$stmnt4->bind_result($minSum);
-$stmnt4->execute();
-$stmnt4->fetch();
-$stmnt4->close();
-if (!$minSum){
-	$minSum = 0;
-}
-$contribScore = $vegSum + $animSum + $minSum;
+
+$contribScore = $Qtotal;
 $mediapath = str_replace("$imagesfroot", "$imageshroot", $mediapath);
 $mediapath = str_replace("$imagesdroot", "$imageshroot", $mediapath);
 $mediapath = str_replace("$imagesNotebookroot","$imageshroot", $mediapath);
