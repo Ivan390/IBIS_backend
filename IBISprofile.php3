@@ -46,16 +46,13 @@ $stmnt1->execute();
 $stmnt1->fetch() ;
 $stmnt1->close();
 $Qtotal = 0;
-#$stmnt2 = $mysqli->prepare("select sum(score) from Vegetables where contribRef = \"$userName\"");
 $stmnt2 = $mysqli->prepare("select sum(Vegetables.score) from Vegetables where contribRef = \"$userName\" union select sum(Animals.score)  from Animals where contribRef = \"$userName\" union select sum(Minerals.score) from Minerals where contribRef = \"$userName\"") or die ("could not prepare statement " . $mysqli->error); 
-#select sum(Animals.score) from Animals where contribRef = \"$userName\" select sum(Minerals.score) from Minerals where contribRef = \"$userName\"" ) ;
 $stmnt2->bind_result($Qresult);
 $stmnt2->execute();
 while ($stmnt2->fetch()){
 	$Qtotal = $Qtotal + $Qresult;
 }
 $stmnt2->close();
-
 $contribScore = $Qtotal;
 $mediapath = str_replace("$imagesfroot", "$imageshroot", $mediapath);
 $mediapath = str_replace("$imagesdroot", "$imageshroot", $mediapath);

@@ -48,7 +48,7 @@ include ("IBISvars.inc");
   	if ($mysqli->connect_error){
     	die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
   	}
-	if ($theCat == "vegetables"){ // Vegetables editing process for getting existing dataset
+	if ($theCat == "vegetables" || $theCat == "Vegetables"  ){ // Vegetables editing process for getting existing dataset
 		$styleSheet = $vegcss;
 		$RECID = "VegetableID";
   		$stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef  FROM Vegetables WHERE $RECID = $recID")or die("cannot prepare select statement");
@@ -111,7 +111,7 @@ include ("IBISvars.inc");
 		<span class="inputClass"><label class="labelClass hiddentext">Contributer Ref</label>
 			<input type="text" name="contributer_ID" id="contrib_ID" class="hiddentext" value=""></span>
 	</div>
-	<div id="images" class="littleDD">
+	<span id="images" class="littleDD">
 		<div id="oldImages" class="imgHolder">	
 			<label class="labelclass">Existing Images</labelclass>'
 			 .$picList.'
@@ -126,11 +126,11 @@ include ("IBISvars.inc");
 			<textarea name="newtagslist" id="newtagslist" class="hiddentext"></textarea>
 			<textarea name="editedtagslist" id="editedtagslist" class="hiddentext"></textarea>
 			<textarea name="imgDeletelist" id="imgDeletelist" class="hiddentext"></textarea>
-		</div>
+		</span>
 	</fieldset>
 </form>';
 }
-if ($theCat == "animals"){  // Animals editing process for getting existing dataset
+if ($theCat == "animals" || $theCat == "Animals" ){  // Animals editing process for getting existing dataset
 	$styleSheet = $animcss;
 	$RECID = "AnimalID";
 if (!$stmtAnim = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef  FROM Animals WHERE $RECID = $recID")){
@@ -148,6 +148,7 @@ $FormOutput = '
 		<input type="text" id="AnimalID" name="AnimalID" class="hiddentext" value="'.$AnimalID.'">
 		<input type="text" id="origdate" name="origDate" class="hiddentext" value="'.$uploadDate.'">
 	  <input type="text" id="mediarefs" name="mediarefs" class="hiddentext" value="'.$mediaRefs.'">
+	   <input type="text" name="newtagslist" id="newtagslist"class="hiddentext" />
 		<span class="inputClass"><label class="labelClass">Phylum</label>
 			<input type="text" id="Phylum" name="phylum" class="nothiddentext" value="'.$phylum.'"></span>
 		<span class="inputClass"><label class="labelClass">subPhylum</label>
@@ -203,15 +204,14 @@ $FormOutput = '
 	  	<input type="file" name="ibismedia[]" id="mediaPic" class="littleDD" multiple />
 	  	<div id="imgDisplay"><label class="labelclass">New Images</labelclass></div>
 			<div id="optionsDsplay" class="littleDD" style="display : none;"></div> 
-			<textarea name="newtagslist" id="newtagslist" class="hiddentext"></textarea>
+
 			<textarea name="editedtagslist" id="editedtagslist" class="hiddentext"></textarea>
 			<textarea name="imgDeletelist" id="imgDeletelist" class="hiddentext"></textarea>
 		</div>
    </div>
-	</fieldset>
-</form>';
+	</fieldset>';
 }		
-if ($theCat == "minerals"){ // call function to resolve mediaRefs to filepaths
+if ($theCat == "minerals" || $theCat == "Minerals"  ){ // call function to resolve mediaRefs to filepaths
 	$styleSheet = $mincss;
 	$RECID = "MineralID";
 	$stmtAnim = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses,  mediaRefs, contribRef, uploadDate, distrib  FROM Minerals WHERE $RECID = $recID") or die($mysqli->error);
@@ -227,6 +227,7 @@ if ($theCat == "minerals"){ // call function to resolve mediaRefs to filepaths
   	<input type="text" id="origdate" name="origDate" class="hiddentext" value="'.$uploadDate.'">
 	  <input type="text" id="VegetableID" name="MineralID" class="hiddentext" value="'.$MineralID.'">
 	  <input type="text" id="mediarefs" name="mediarefs" class="hiddentext" value="'.$mediaRefs.'">
+	  <input type="text" name="newtagslist" id="newtagslist"class="hiddentext" />
 		<span class="inputClass"><label class="labelClass">Name</label>
 		  <input type="text" id="name" name="name" class="nothiddentext" value="'.$name.'"></span>
 		<span class="inputClass"><label class="labelClass">Group</label>
@@ -280,7 +281,7 @@ if ($theCat == "minerals"){ // call function to resolve mediaRefs to filepaths
   	  <input type="file" name="ibismedia[]" id="mediaPic" class="littleDD" multiple />
   	  <div id="imgDisplay"><label class="labelclass">New Images</labelclass></div>
 		  <div id="optionsDsplay" class="littleDD" style="display : none;"></div> 
-		  <textarea name="newtagslist" id="newtagslist"class="hiddentext"></textarea>
+
 		  <textarea name="editedtagslist" id="editedtagslist" class="hiddentext"></textarea>
 		<textarea name="imgDeletelist" id="imgDeletelist" class="hiddentext"></textarea>
 	  </div>
@@ -337,7 +338,7 @@ $htmlHead = '<!DOCTYPE html>
 	       	<a href="http://192.168.43.132/ibis/IBISmain.html" class="linkC">Back to Main</a>
         </div>
         <div id="detail_fs_min" class="littleDD" >';
-$htmlClose = '</body></html>';	 			
+$htmlClose = '</form></div></body></html>';	 			
 $htmlPage = $htmlHead.$FormOutput.$htmlClose;
 print "$htmlPage";
 ?>

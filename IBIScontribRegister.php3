@@ -7,20 +7,23 @@
     	<script type="text/javascript" src="http://192.168.43.132/ibis/dateshorts.js"></script>
   		<link rel="stylesheet"
 	    	type="text/css"
-      		href="http://192.168.43.132/ibis/register.css"
+      		href="http://192.168.43.132/ibis/Breg.css"
     		>
 	</head>
  	<body>
 		<div id="allContainer" class="ac">
  			<div id="logo">
-	       		<img id="logo_image" src="http://192.168.43.132/ibis/images/Logo1_fullsizetransp.png">
-          	</div>
-        	<div id="pgButtons" class="littleDD">
-	        	<a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD"><img src="" alt="">Back to Main Screen</a>
-	        </div>
-		</div>
+	    	<img id="logo_image" src="http://192.168.43.132/ibis/images/Logo1_fullsizetransp.png">
+      </div>
+      <p class="heading">IBIS Registration Confirmation</p>
+      <div id="pgButtons" class="littleDD">
+	    	<a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD"><img src="" alt="">Back to Main Screen</a>
+	    </div>
+		
+		
+		<div id="detail_fs">
 		<div id="phpOutput" class="phpOut">
-			<p class="heading">IBIS Registration Confirmation</p>
+			
 			<?php
 				$fileList ="";
 				include ("IBISvars.inc");
@@ -44,7 +47,9 @@
 				$stmt6->fetch();
 				$stmt6->close();
 				if ($emailCount > 0){
-					print "$email is allready registered<br>";
+					$reason= "this email  <div class=Important>". $email . "</div> is allready registered</br>record not added.";
+					$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/notokeydoke.png\"><span id=\"messSpan\">$reason</span>";
+					print "$message";
 					exit;
 				}else{
     			$stmt = $mysqli->prepare("SELECT count(MediaID) FROM Media WHERE filename LIKE '%$prefix%'") or die ("cannot create statement.");
@@ -60,6 +65,7 @@
         				$uploadfile = $uploaddir.$newName ;
         				$tmpFilePath = $_FILES['picture']['tmp_name'];
         				if ( move_uploaded_file("$tmpFilePath", "$uploadfile") ) {
+        				exec("/usr/bin/convert -resize 400x300! $uploadfile $uploadfile");
 	  						$fileList = "$newName";
 	  						$stmt2 = $mysqli->prepare("INSERT INTO Media ( MediaID, type, filename, tags, uploadDate, contribRef, uploaderType, serverpath ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )");
 	  						$stmt2->bind_param('ssssssss', $MediaID, $Type, $filename, $tags, $uploadDate, $contribRef, $uploaderType, $serverpath) or die ("cannot bind parameters.");
@@ -79,7 +85,7 @@
         				} else {
 	 						print("File upload failed <br>");
         				}
-      				}//print "list of files $fileList just outsideloop inside function <br>";
+      				}
     				}else {
      					print "this stupid did not execute";
     				}
@@ -100,8 +106,11 @@
     				print "Your email is <div class=Important>". $email ."</div></br>";
     				$stmt3->execute();
     				if ($stmt3->affected_rows == -1){
-     					print "this email  <div class=Important>". $email . "</div> is allready registered</br>record not added.";
-    				}
+     					
+     					$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/notokeydoke.png\"><span id=\"messSpan\">$reason</span>";
+    				}else{
+			$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/okeydoke.png\"><span id=\"messSpan\">Data upload successful</span>";
+		}
     					$stmt3->close();
   					}
   
@@ -116,8 +125,10 @@
 					$theUserName = "$inName" . "$rcode";
 					return $theUserName;
 				}
-
+				print "<div>$message</div>";
 				?>
+			</div>
+			</div>
 			</div>
 		</div>
 	</body>

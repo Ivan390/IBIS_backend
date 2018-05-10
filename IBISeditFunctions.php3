@@ -16,23 +16,21 @@ if ($upcount > 0 && $upfile != ""){ // test if more than 0 upload and that the n
       $postTags = explode("::", $_POST['newtagslist']); // explode the list of submitted new imagetags
       $postTagCnt = count($postTags);
       foreach ($postTags as $tag){
-		for ($d=0; $d <= $filecount; $d++){ //
-		  	$justname = $_FILES['ibismedia']['name'][$d];// 
-		  	$temptag = $tag;
-		  	if (!strstr($temptag, $justname)) {
-				$tag = "$justname : no tag";
-				$newTagList .= "$tag::";
-				$tagCount++;
-		  	}else {
-				$newTagList .= "$tag::";
-				$tagCount++;
-	  		}
-		}
+				for ($d=0; $d <= $filecount; $d++){ //
+						$justname = $_FILES['ibismedia']['name'][$d];// 
+						$temptag = $tag;
+						if (!strstr($temptag, $justname)) {
+						$tag = "$justname : no tag";
+						$newTagList .= "$tag::";
+						$tagCount++;
+						}else {
+						$newTagList .= "$tag::";
+						$tagCount++;
+				}
+			}
   	}
     $newPostTags = explode("::", $newTagList);
-	foreach ($newPostTags as $atag){
-			//print "$atag </br>";
-	}
+	
  	for ($i = 0; $i < $filecount; $i++){
  		$numFile++;
  		$justname = $_FILES['ibismedia']['name'][$i];

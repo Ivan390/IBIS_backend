@@ -29,6 +29,8 @@ if ($_FILES['picture']){
 	$tmpFilePath = $_FILES['picture']['tmp_name'];
 	if(!$tmpFilePath){$fileList = $_POST['medRef'];}
 	if ( move_uploaded_file("$tmpFilePath", "$uploadfile") ) {
+		exec("/usr/bin/convert -resize 400x300! $uploadfile $uploadfile"); // call convert to resize the image
+	
 		$stmt2 = $mysqli->prepare("INSERT INTO Media ( MediaID, type, filename, tags, uploadDate, contribRef, uploaderType, serverpath ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )");
 		$stmt2->bind_param('ssssssss', $MediaID, $Type, $filename, $tags, $uploadDate, $contribRef, $uploaderType, $serverpath) or die ("cannot bind parameters.");
 		$MediaID = 0;
@@ -59,24 +61,39 @@ if ($_FILES['picture']){
 	$stmt3 = $mysqli->prepare("UPDATE Contributers SET role='$role' , email='$email' , mediaRef='$mediaRef' , regDate='$regDate' , securityQ='$securityQ' , securityA='$securityA' , userName='$username' , passwrd='$passwd' WHERE ContribID='$contID'") or die ("cant prepare statement 3".$mysqli->error);
 	$stmt3->execute();
 	if ($stmt3->affected_rows == -1){
-		$messg =  "the record was not added";
-	}
+		$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/notokeydoke.png\"><span id=\"messSpan\">Something went wrong please check your connection</span>";
+		}else{
+			$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/okeydoke.png\"><span id=\"messSpan\">Data upload successful</span>";
+		}
 	$stmt3->close();
-	$htmlhead = '<!doctype html>
-	<head>
-		<script type="text/javascript">
-			function clWin(){
-				close();
-			}
+	$htmlhead = '<!DOCTYPE html>
+<html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    	<meta http-equiv="content-type" content="text/xml; charset=utf8" />
+  		<title>IBIS Registration Confirmation</title>
+		<script type="text/javascript" src="http://192.168.43.132/ibis/jquery-1.11.3.js"> </script>
+    	<script type="text/javascript" src="http://192.168.43.132/ibis/dateshorts.js"></script>
+    	<script type="text/javascript">
+		function clWin(){
+			close();
+		}
 		</script>
+  		<link rel="stylesheet"
+	    	type="text/css"
+      		href="http://192.168.43.132/ibis/BUreg.css"
+    		>
 	</head>
-	<body>
-	<div id="container">
-		<input type="button" value="Close" onclick="clWin()" />
-	</div>'
-	;
-	$htmlFoot ='</body></html>';
-	print "$htmlhead"."$messg". "$htmlFoot";
+ 	<body>
+		<div id="allContainer" class="ac">
+ 			<div id="logo">
+	    	<img id="logo_image" src="http://192.168.43.132/ibis/images/Logo1_fullsizetransp.png">
+      </div>
+      <p class="heading">Registration Update Confirmation</p>
+      <div id="container">
+			<div id="detail_fs">
+		<input type="button" value="Close" onclick="clWin()" />';
+	$htmlFoot ='</div></body></html>';
+	print "$htmlhead"."$message". "$htmlFoot";
 }else{
 	print "no upload variable found";
 }

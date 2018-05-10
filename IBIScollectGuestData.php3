@@ -62,8 +62,12 @@ if ($stmt->execute()){
 		$mediaRefs = $filename;
 		$stmt3->execute();
 		if ($stmt3->affected_rows == -1){
+			$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/notokeydoke.png\"><span id=\"messSpan\">Something went wrong please check your connection</span>";
+		}else{
+			$message = "<img id=\"sucCheck\" src=\"http://192.168.43.132/ibis/images/okeydoke.png\"><span id=\"messSpan\">Data upload successful</span>";
 		}
 		$stmt3->close();		
+			
 $htmlHead = '<!DOCTYPE html>
 <html lang="EN" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -92,7 +96,7 @@ $htmlHead = '<!DOCTYPE html>
      		 href="http://192.168.43.132/ibis/animedit.css"
    		 >
    </head>
-   <body name="VegInputBody" onload="starttime()" >
+   <body name="ResultBody" onload="starttime()" >
 	   <div id="allContainer" class="ac">
 	  	<div id="dateTime">
 	        <div id="dateBlock">The Date</div>
@@ -104,7 +108,11 @@ $htmlHead = '<!DOCTYPE html>
         </div>
         <div id="pgButtons" class="littleDD">
 	        <a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD"><img src="" alt="">Back to Main Screen</a>
+	        <a href="http://192.168.43.132/cgi-bin/IBISnewGuest.php3" class="buttonclass littleDD"><img src="" alt="">Back to Guestbook</a>
         </div>
-        <div id="detail_fs_min" class="littleDD" ></div>';
+        <div id="detail_fs_min" class="littleDD" >'.$message.'</div></body></html>';
 print "$htmlHead";
 ?>
+
+
+

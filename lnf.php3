@@ -1,5 +1,7 @@
 <?php
 	$inVar = $_POST['name1'];
+	$weirdch = '/[^a-zA-Z]/';
+	$spce = ' ';
 	include ("IBISvars.inc");
  	if (!$guest_acc){
   		print "the include file was not included <br>"; 
@@ -16,11 +18,27 @@
 		if ($inVar == "Vegetables"){
 			$recID = "VegetableID";
 		}
-		$stmnt = $mysqli->prepare("select $recID, genus, species, localNames from $inVar where mediaRefs = 'noinfo' or mediaRefs = '' order by genus") or die ($mysqli->error);
+		$stmnt = $mysqli->prepare("select $recID, genus, species, localNames from $inVar where mediaRefs = 'noinfo' or mediaRefs = '' or mediaRefs = 'noinfo:' order by genus") or die ($mysqli->error);
 	}
 	$stmnt->bind_result($recID, $gen,$spec,$Cnames) or die ($mysqli->error);
 	$stmnt->execute() or die ($mysqli->error);
 	while ($stmnt->fetch()){
+	if ($gen == "" || $gen == "noinfo") {
+		$gen = "noinfo";
+
+	}
+	if ($spec == "" || $spec == "noinfo") {
+		$spec = "noinfo";
+
+	}
+	if ($Cnames == "" || $Cnames == "noinfo") {
+		$Cnames = "noinfo";
+
+	}
+  	$recID; // =	preg_replace("$weirdch", "$spce", $recID );
+		$gen =	preg_replace("$weirdch", "$spce", $gen );
+		$spec =	preg_replace("$weirdch", "$spce", $spec);
+		$Cnames =	preg_replace("$weirdch", "$spce", $Cnames );
 		$returnList .= "$recID:$gen:$spec:$Cnames:@";
 	}
 	print "$returnList";
