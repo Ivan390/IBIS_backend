@@ -1,0 +1,57 @@
+This is the backend files for IBIS an Indexed Biological Information Service
+I wanted to learn web developement and I needed a problem to solve, also I have a keen interest in nature but I never know the names of stuff. So I came up with this. Its basically a browser interface to a sql database that serves information on biological stuff. Notice the lack of complicated scientific words,...well that is because I have no scientific background. I am in fact an idiot, but I am an idiot who likes interesting problems. My problem is having an easy way to look up information on biological "stuff". 
+These php scripts are mostly functional although the image processing function make use of the  ImageMagick 6.7.7-10 graphics library which is about the only external library. I am still tryingto use th
+e gd library which is bundled with php but I'm still working it.
+
+This repository contains the following files 
+README
+*****PHP Scripts****
+getRefs.php3
+IBIScheckdup.php3 
+IBIScollectFunctions.php3
+IBIScollectGuestData.php3
+IBIScomments.php3
+IBIScontribRegister.php3
+IBIS_current.sql
+IBISeditAnimals.php3
+IBISeditFunctions.php3
+IBISeditFunctionsproto.php3
+IBISeditMinerals.php3
+IBISeditStuff.php3
+IBISeditVegetables.php3
+IBISgetCatIndex.php3
+IBISgetDetails.php3
+IBISgetnames.php3
+IBISgetNames.php3
+IBISgetSummarry.php3
+IBISglossary.php3
+IBISindexCreator.php3
+IBISkeywordIndex.php3
+IBISlnfCollect.php3
+IBISlogin.php3
+IBISLogout.php3
+IBISnewAnimals.php3
+IBISnewGuest.php3
+IBISnewIndexCreator.php3
+IBISnewMinerals.php3
+IBISnewVegetables.php3
+IBISpicCompare2.php3
+IBISpopulate.php3
+IBISprofile.php3
+IBISregDetails.php3
+IBISsrc.php3
+IBISupdContrib.php3
+IBISupdSrc.php3
+IBISvars.inc
+IBISviews.php3
+IBISvotes.php3
+lnf.php3
+picCompare2.php3
+picCompare3.php3
+picCompare.php3
+*****PHP Scripts****
+*****IBIS Database dump****
+/IBIS_current.sql
+*****IBIS Database dump****
+This is a work in progress
+
