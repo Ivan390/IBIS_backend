@@ -102,8 +102,7 @@ $htmlHead = '<!DOCTYPE html>
       <div id="pgButtons" class="littleDD">
 	    	<a href="http://192.168.43.132/ibis/IBISmain.html" class="buttonclass littleDD"><img src="" alt="">Back to Main Screen</a>
       </div>
-      <div id="detail_fs_min" class="littleDD" ><div id="resultdiv" class="littledd">'.$tagStatus.'</div></div>
-      
+      <div id="detail_fs_min" class="littleDD" ></div>
      </div></body></html> ';
        
 print "$htmlHead";

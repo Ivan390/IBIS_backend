@@ -24,7 +24,6 @@ $fileList .= "$existRefs:";
  	} else {
  		$delListrefs = explode(":", $delList);
 		foreach ($delListrefs as $delItem){
-			if ($delItem == ""){ continue; }
 			$fileList = str_replace("$delItem", "", $fileList);
 		}
  	}
@@ -139,8 +138,5 @@ get POST[newtagslist]
 */
 
 }
-medRefs = $_POST['mediarefs'];
-Rmedia(medRefs);
-Amedia();
 
 ?>

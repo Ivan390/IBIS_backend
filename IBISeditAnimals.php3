@@ -16,11 +16,9 @@
 	$dataMessg ="";
 	$dataError ="";
 	$tagCount = 0;
-	$fileList = "";
 	if ($_POST['kingdom'] == "Animalia"){
 		$prefix = "anim";
 		include ("IBISeditFunctions.php3");
-		include ("cleaner.php3");
 	//$thisspecies = trim(array_key_exists('species',$_POST)?$_POST['species']:null);
 	$thisAID= trim(array_key_exists('AnimalID',$_POST)?$_POST['AnimalID']:null);
 	$stmt3a = "INSERT INTO AnimalsEdits (AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef, editComnt, origDate )
@@ -32,9 +30,7 @@
 	$stmt3 = $mysqli->prepare("INSERT INTO Animals (AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib, status, uploadDate, mediaRefs, contribRef,editComnt, origDate ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") or die ("could not prepare statement 3 <br>");
 	$stmt3->bind_param('sssssssssssssssssssssssss', $AnimalID, $phylum, $subPhylum, $class, $subClass, $order, $suborder, $family, $subfamily, $genus, $subgenus, $species, $subspecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $status, $uploadDate, $mediaRefs,  $contributer_ID, $editComnt, $origDate );
 	$AnimalID = trim(array_key_exists('AnimalID',$_POST)?$_POST['AnimalID']:null); 
-	
 	$phylum = trim(array_key_exists('phylum',$_POST)?$_POST['phylum']:null); 
-	$phylum = cleanup($phylum);
 	$subPhylum = trim(array_key_exists('subPhylum',$_POST)?$_POST['subPhylum']:null);
 	$class = trim(array_key_exists('class',$_POST)?$_POST['class']:null);
 	$subClass = trim(array_key_exists('subClass',$_POST)?$_POST['subClass']:null);
@@ -48,8 +44,7 @@
 	$subspecies = trim(array_key_exists('subSpecies',$_POST)?$_POST['subSpecies']:null);
 	$common_Names = trim(array_key_exists('common_Names',$_POST)?$_POST['common_Names']:null);
 	$name_Notes = trim(array_key_exists('name_Notes',$_POST)?$_POST['name_Notes']:null);
-	$description = cleanup(trim(array_key_exists('description',$_POST)?$_POST['description']:null));
-	//$description = cleanup($description);
+	$description = trim(array_key_exists('description',$_POST)?$_POST['description']:null);
 	$ecology = trim(array_key_exists('ecology',$_POST)?$_POST['ecology']:null);
 	$habits = trim(array_key_exists('habits',$_POST)?$_POST['habits']:null);
 	$distrib_Notes = trim(array_key_exists('distrib_Notes',$_POST)?$_POST['distrib_Notes']:null);

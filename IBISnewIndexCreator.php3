@@ -180,7 +180,8 @@ function showSummarry(that){
       var testregexp = /no match/;
 	     if (testregexp.test(data)) {
 	        alert("Okayyyy");
-       }else {
+       }else { 
+       // animals::Aonyx:capensis:Cape ClawlessOtter:animals::Pternistes:capensis:CapeFrancolin:
 	      thedata2 = data.split(":");
 	     if (thedata2[0] == "vegetables"|| thedata2[0] == "animals"){
   

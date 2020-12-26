@@ -35,7 +35,6 @@
 	$genus = trim(array_key_exists('genus',$_POST)?$_POST['genus']: null);
 	$subgenus = trim(array_key_exists('subgenus',$_POST)?$_POST['subgenus']: null);
 	$species = trim(array_key_exists('species',$_POST)?$_POST['species']: null);
-	$species = strtolower($species);
 	$subspecies = trim(array_key_exists('subspecies',$_POST)?$_POST['subspecies']: null);
 	$common_Names = trim(array_key_exists('common_Names',$_POST)?$_POST['common_Names']: null);
 	$name_Notes = trim(array_key_exists('name_Notes',$_POST)?$_POST['name_Notes']: null);

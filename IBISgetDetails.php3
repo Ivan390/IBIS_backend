@@ -41,6 +41,9 @@ $imglistOptions = "";
 $qClose = ';';
 $picList ="";
 $imgpath = "";
+$recID = "";
+$recnum = "";
+$viewC = 0;
   include ("IBISvars.inc");
  	if (!$guest_acc){
   	print "the include file was not included <br>";
@@ -51,13 +54,17 @@ $imgpath = "";
   }
 
 	if ($theCat == "vegetables"){
-  $stmt3 = $mysqli->prepare("SELECT phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef  FROM Vegetables WHERE species='$theSpecies'");
+	$prefix = "veg";
+  $stmt3 = $mysqli->prepare("SELECT VegetableID, phylum, subPhylum, class, subClass, Vorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, ecology, distrib, uses, growing, category, status, uploadDate, mediaRefs, contribRef  FROM Vegetables WHERE species='$theSpecies'");
 
-  $stmt3->bind_result($phylum, $subPhylum, $class, $subClass, $Vorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $ecology, $distrib_Notes, $uses, $growing, $category, $status, $uploadDate, $mediaRefs, $contribRef);	
+  $stmt3->bind_result($vegID, $phylum, $subPhylum, $class, $subClass, $Vorder, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $ecology, $distrib_Notes, $uses, $growing, $category, $status, $uploadDate, $mediaRefs, $contribRef);	
   $stmt3->execute();
   $stmt3->fetch();
   $stmt3->close();
+  $recID = "$prefix$vegID";
+  $recnum = $vegID;
  $mediaList = explode(":", $mediaRefs);
+// print "<p>$recID</p>";
  foreach ($mediaList as $mediaRef){
    if ($mediaRef == ""){
      continue;
@@ -136,13 +143,16 @@ $imgpath = "";
   ";
 	}
 	if ($theCat == "animals"){
-  $stmt3 = $mysqli->prepare("SELECT phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib,  uploadDate, mediaRefs, contribRef, status  FROM Animals WHERE species='$theSpecies'");
+	$prefix = "anim";
+  $stmt3 = $mysqli->prepare("SELECT AnimalID, phylum, subPhylum, class, subClass, Aorder, subOrder, family, subFamily, genus, subGenus, species, subSpecies, localNames, nameNotes, descrip, habits, ecology, distrib,  uploadDate, mediaRefs, contribRef, status  FROM Animals WHERE species='$theSpecies'");
 
-  $stmt3->bind_result($phylum, $subPhylum, $class, $subClass, $order, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $uploadDate, $mediaRefs, $contribRef, $status);	
+  $stmt3->bind_result($animID, $phylum, $subPhylum, $class, $subClass, $order, $subOrder, $family, $subFamily, $genus, $subGenus, $species, $subSpecies, $common_Names, $name_Notes, $description, $habits, $ecology, $distrib_Notes, $uploadDate, $mediaRefs, $contribRef, $status);	
   $stmt3->execute();
   $stmt3->fetch();
   $stmt3->close();
  $mediaList = explode(":", $mediaRefs);
+ $recID = "$prefix$animID";
+ $recnum = $animID;
  foreach ($mediaList as $mediaRef){
    if ($mediaRef == ""){
      continue;
@@ -217,13 +227,16 @@ $imgpath = "";
 	}
 
 	if ($theCat == "minerals"){
-  $stmt3 = $mysqli->prepare("SELECT name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses, mediaRefs,   contribRef, uploadDate, distrib  FROM Minerals WHERE name='$theSpecies'");
+	$prefix = "min";
+  $stmt3 = $mysqli->prepare("SELECT MineralID, name, Mgroup, crystalSys, habit, chemForm, hardness, density, cleavage, fracture, streak, lustre, fluorescence, notes, origin, characteristics, uses, mediaRefs,   contribRef, uploadDate, distrib  FROM Minerals WHERE name='$theSpecies'");
 
-  $stmt3->bind_result($name, $Mgroup, $crystalSys, $habit, $chemForm, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $uses, $mediaRefs, $contribRef, $uploadDate, $distrib);	
+  $stmt3->bind_result($minID, $name, $Mgroup, $crystalSys, $habit, $chemForm, $hardness, $density, $cleavage, $fracture, $streak, $lustre, $fluorescence, $notes, $origin, $characteristics, $uses, $mediaRefs, $contribRef, $uploadDate, $distrib);	
   $stmt3->execute();
   $stmt3->fetch();
   $stmt3->close();
  $mediaList = explode(":", $mediaRefs);
+ $recID = "$prefix$minID";
+ $recnum = $minID;
  foreach ($mediaList as $mediaRef){
    if ($mediaRef == ""){
      continue;
@@ -299,7 +312,7 @@ $imgpath = "";
  </form>
   ";
 	}
-
+	include ("IBISviews.php3");
 ?>
 
 </div>
@@ -319,6 +332,9 @@ function goBack(){
  }
 
 </script>
+<?php
+print "<div id=viewsBlock><label>Viewed <span id=Vcount>'$viewC'</span> Times</label></div>";
+?>
 </body>
 
 </html>

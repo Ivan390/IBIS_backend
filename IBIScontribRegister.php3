@@ -24,6 +24,7 @@
 <p class="heading">IBIS Registration Confirmation</p>
 <?php
   $fileList ="";
+    //print "the connection is being initiated.</br>...</br>";
   include ("IBISvars.inc");
   if (!$guest_acc){
     print "the include file was not included <br>";
@@ -32,13 +33,16 @@
   if ($mysqli->connect_error){
     die('Connect Error ('. $mysqli->connect_errno . ')' .$mysqli->connect_error);
   }
+ // print "Connection to Database established.</br>";
   $filecount = count($_FILES['picture']['name']);
-  $name = trim($_POST['name']); 
-  $cleanname = str_replace("$space", "$underscore", $name);
-  $securityA = trim($_POST['secA']);
-  $username = getUserName("$cleanname", "$securityA");
+ // print "$filecount<br>";
+ $name = trim($_POST['name']); 
+ $cleanname = str_replace("$space", "$underscore", $name);
+ $securityA = trim($_POST['secA']);
+ $username = getUserName("$cleanname", "$securityA");
   $prefix = "reg";
   $email = trim($_POST['email']);
+  //print "$email";
   $stmt6 = $mysqli->prepare("SELECT count(ContribID) FROM Contributers WHERE email='$email'");
   $stmt6->execute();
   $stmt6->bind_result($emailCount);
@@ -53,36 +57,42 @@
       $stmt->bind_result($numFile) or die ("cannot bind parameters.");
       $stmt->fetch();
       $stmt->close();
+     // print "$numFile existing records <br>";
       for ($i = 0; $i < $filecount; $i++){
         $numFile = $numFile + 1;
-		$justname = $_FILES['picture']['name'];
-		$extn = substr($justname, -4);
-		$newName = $prefix.$numFile.$extn ;
+				$justname = $_FILES['picture']['name'];
+	//print "$justname <br>";
+				$extn = substr($justname, -4);
+				$newName = $prefix.$numFile.$extn ;
         $uploadfile = $uploaddir.$newName ;
         $tmpFilePath = $_FILES['picture']['tmp_name'];
+      //  print "$newName <br>";
+        //print("$justname <br>");
         if ( move_uploaded_file("$tmpFilePath", "$uploadfile") ) {
-	 		exec("/usr/bin/convert -resize 400x300! $uploadfile $uploadfile");
-  			$fileList = "$newName";
-  			$stmt2 = $mysqli->prepare("INSERT INTO Media ( MediaID, type, filename, tags, uploadDate, contribRef, uploaderType, serverpath ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )");
-  			$stmt2->bind_param('ssssssss', $MediaID, $Type, $filename, $tags, $uploadDate, $contribRef, $uploaderType, $serverpath) or die ("cannot bind parameters.");
-			$MediaID = 0;
-			$Type = "image";
-			$filename = $newName;
-			$tags = $cleanname;
-			$contribRef = $username;
-			$uploadDate =  date("Ymd");
-			$uploaderType = "c";
-			$serverpath = $serverRoot.$filename;
-			$stmt2->execute();
-			if ($stmt2->affected_rows == -1){
-				print "IBIS Upload failed <br>";
-			}else{
-			//	print "IBIS Data upload succesful<br>";
-			}
+	 // print("File upload was successful <br>");
+	  			$fileList = "$newName";
+	  			$stmt2 = $mysqli->prepare("INSERT INTO Media ( MediaID, type, filename, tags, uploadDate, contribRef, uploaderType, serverpath ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )");
+	  			$stmt2->bind_param('ssssssss', $MediaID, $Type, $filename, $tags, $uploadDate, $contribRef, $uploaderType, $serverpath) or die ("cannot bind parameters.");
+					$MediaID = 0;
+					$Type = "image";
+					$filename = $newName;
+					$tags = $cleanname;
+					$contribRef = $username;
+					$uploadDate =  date("Ymd");
+					$uploaderType = "c";
+					
+					$serverpath = $serverRoot.$filename;
+					$stmt2->execute();
+	  //print "statement should have executed....</br>";
+					if ($stmt2->affected_rows == -1){
+						print "IBIS Upload failed <br>";
+					}else{
+					//	print "IBIS Data upload succesful<br>";
+					}
         } else {
-			print("File upload failed <br>");
+	 				print("File upload failed <br>");
         }
-      }
+      }//print "list of files $fileList just outsideloop inside function <br>";
     }else {
       print "this stupid did not execute";
     }

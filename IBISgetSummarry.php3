@@ -26,8 +26,10 @@ $pictitle = $_GET['pictitle'];
      print "error executing stmt4 :". $mysqli->error;
   }
    $stmt4->bind_result($family, $genus, $species, $localnames);
-    $stmt4->fetch();
-   $retlist4 = "$catVal:$family:$genus:$species:$localnames:";
+    while ($stmt4->fetch()){
+    $retlist4 .= "$catVal:$family:$genus:$species:$localnames:";
+    }
+   
   }
   if ($catVal == "minerals"){
     $stmtZ = "select name, Mgroup, crystalSys, chemForm from Minerals where name= '$pictitle'";
@@ -45,7 +47,7 @@ $pictitle = $_GET['pictitle'];
   }
   
    if ($catVal == "animals"){ 
-    $stmtZ = "SELECT family, genus, species, localNames FROM Animals WHERE species like '$pictitle%';";
+    $stmtZ = "SELECT family, genus, species, localNames FROM Animals WHERE species = '$pictitle';";
     if ($stmt4 = $mysqli->prepare("$stmtZ")){
   }else { 
     print "error preparing stmt4 :". $mysqli->error;
@@ -55,12 +57,12 @@ $pictitle = $_GET['pictitle'];
      print "error executing stmt4 :". $mysqli->error;
   }
    $stmt4->bind_result($family, $genus, $species, $localnames);
-    $stmt4->fetch();
-   $retlist4 = "$catVal:$family:$genus:$species:$localnames:";
-  } 
+     while ($stmt4->fetch()){
+    $retlist4 .= "$catVal:$family:$genus:$species:$localnames:";
+     } 
  // if ($IBIS_T == "vegetables" || $IBIS_T == "animals"){ 
 //
- // }
+}
   print $retlist4;
   
   }
